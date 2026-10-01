@@ -21,11 +21,12 @@ check_contains() { # path text
 for p in / /sell-your-house /investors /es/ /es/sell-your-house /es/investors; do check_status "$p" 200; done
 
 # Legacy URLs (301)
-check_status /index.html 301 /
+# /index.html and /es/index.html are served as files (same page, canonical points to the clean URL)
+check_status /index.html 200
 check_status /sell-your-house.html 301 /sell-your-house
 check_status /for-investors.html 301 /investors
 check_status /for-investors 301 /investors
-check_status /es/index.html 301 /es/
+check_status /es/index.html 200
 check_status /es/sell-your-house.html 301 /es/sell-your-house
 check_status /es/for-investors.html 301 /es/investors
 check_status /sitemap.xml 301 /sitemap-index.xml
