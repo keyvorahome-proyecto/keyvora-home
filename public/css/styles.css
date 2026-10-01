@@ -753,3 +753,73 @@ picture img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .quick-band::after { background: rgba(20, 22, 26, 0.78); }
 }
 .hero:has(.hero-photo) .hero-roofline { display: none; }
+
+/* ===== Interactive cards and house photos ===== */
+.path-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.path-card.has-photo { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.path-card .card-photo { display: block; aspect-ratio: 16 / 10; overflow: hidden; }
+.path-card .card-photo img { transition: transform 0.6s ease; }
+.path-card .card-body { padding: 28px 32px 32px; }
+.path-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(45, 45, 45, 0.12); }
+.path-card:hover .card-photo img { transform: scale(1.04); }
+
+.situations-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+  gap: 28px;
+  align-items: stretch;
+}
+.story-photo { display: block; border-radius: var(--radius-lg); overflow: hidden; min-height: 100%; }
+.story-photo img { object-position: 50% 60%; }
+.situations-layout .situation-grid { grid-template-columns: 1fr 1fr; }
+.situation-grid > li { display: flex; }
+
+a.situation-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+a.situation-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-gold);
+  box-shadow: 0 14px 30px rgba(45, 45, 45, 0.1);
+}
+.situation-card .card-link {
+  margin-top: auto;
+  padding-top: 14px;
+  color: var(--color-cta);
+  font-weight: 500;
+  font-size: 0.92rem;
+}
+a.situation-card:hover .card-link { text-decoration: underline; }
+
+.pillar, .journey { transition: transform 0.25s ease; }
+
+/* Scroll reveal: only when JS is on and motion is allowed (class set in <head>) */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.js-reveal [data-reveal].is-visible { opacity: 1; transform: none; }
+
+@media (max-width: 960px) {
+  .situations-layout { grid-template-columns: 1fr; }
+  .story-photo { aspect-ratio: 16 / 9; min-height: 0; }
+}
+
+@media (max-width: 720px) {
+  .situations-layout .situation-grid { grid-template-columns: 1fr; }
+  .path-card .card-body { padding: 22px 22px 26px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .path-card:hover, a.situation-card:hover { transform: none; }
+  .path-card:hover .card-photo img { transform: none; }
+}
+.path-card.has-photo .card-body { display: flex; flex-direction: column; flex: 1; }
+.path-card.has-photo .card-body .btn { margin-top: auto; align-self: flex-start; }
+@media (max-width: 720px) { .path-card.has-photo .card-body .btn { align-self: stretch; text-align: center; } }

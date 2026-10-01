@@ -69,6 +69,37 @@ document.addEventListener('DOMContentLoaded', () => {
       window.location.href = quick.getAttribute('action') + '#offer';
     });
   });
+  // Situation cards on the Home: remember the choice and prefill the seller form.
+  const SITUATION_KEY = 'keyvora_prefill_situation';
+  document.querySelectorAll('a[data-situation]').forEach((card) => {
+    card.addEventListener('click', () => {
+      try { sessionStorage.setItem(SITUATION_KEY, card.getAttribute('data-situation')); } catch (err) { /* storage unavailable */ }
+    });
+  });
+  const reasonField = document.querySelector('form[data-lead-form="seller"] #reason');
+  if (reasonField && !reasonField.value) {
+    try {
+      const situation = sessionStorage.getItem(SITUATION_KEY);
+      if (situation) { reasonField.value = situation; sessionStorage.removeItem(SITUATION_KEY); }
+    } catch (err) { /* storage unavailable */ }
+  }
+
+  // Scroll reveal (enabled from <head> only when motion is allowed).
+  if (document.documentElement.classList.contains('js-reveal')) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    document.querySelectorAll('[data-reveal]').forEach((el, i) => {
+      el.style.transitionDelay = (i % 3) * 80 + 'ms';
+      observer.observe(el);
+    });
+  }
+
   const addressField = document.querySelector('form[data-lead-form="seller"] #address');
   if (addressField && !addressField.value) {
     try {

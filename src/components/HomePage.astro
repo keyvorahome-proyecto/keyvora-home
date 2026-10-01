@@ -46,17 +46,21 @@ const investUrl = routes.investors[lang];
       <h2 id="selector-title">{t.selector.h2}</h2>
     </div>
     <div class="path-cards">
-      <div class="path-card">
-        <div class="icon" aria-hidden="true">🏠</div>
-        <h3>{t.selector.seller.title}</h3>
-        <p>{t.selector.seller.text}</p>
-        <a class="btn btn-primary" href={sellUrl}>{t.selector.seller.cta}</a>
+      <div class="path-card has-photo" data-reveal>
+        <Photo class="card-photo" name="house-midwest" alt={t.images.sellerCard} width={1280} height={1049} sizes="(max-width: 720px) 100vw, 540px" small={640} />
+        <div class="card-body">
+          <h3>{t.selector.seller.title}</h3>
+          <p>{t.selector.seller.text}</p>
+          <a class="btn btn-primary" href={sellUrl}>{t.selector.seller.cta}</a>
+        </div>
       </div>
-      <div class="path-card">
-        <div class="icon" aria-hidden="true">🏗️</div>
-        <h3>{t.selector.investor.title}</h3>
-        <p>{t.selector.investor.text}</p>
-        <a class="btn btn-primary" href={investUrl}>{t.selector.investor.cta}</a>
+      <div class="path-card has-photo" data-reveal>
+        <Photo class="card-photo" name="house-porch-spring" alt={t.images.investorCard} width={1280} height={853} sizes="(max-width: 720px) 100vw, 540px" small={640} />
+        <div class="card-body">
+          <h3>{t.selector.investor.title}</h3>
+          <p>{t.selector.investor.text}</p>
+          <a class="btn btn-primary" href={investUrl}>{t.selector.investor.cta}</a>
+        </div>
       </div>
     </div>
   </div>
@@ -69,15 +73,21 @@ const investUrl = routes.investors[lang];
       <h2 id="situations-title">{t.situations.h2}</h2>
       <p>{t.situations.intro}</p>
     </div>
-    <ul class="situation-grid">
-      {t.situations.items.map((item) => (
-        <li class="situation-card">
-          <span class="icon" aria-hidden="true">{item.icon}</span>
-          <h3>{item.title}</h3>
-          <p>{item.text}</p>
-        </li>
-      ))}
-    </ul>
+    <div class="situations-layout">
+      <Photo class="story-photo" name="house-porch-evening" alt={t.images.story} width={853} height={1280} sizes="(max-width: 960px) 100vw, 380px" small={560} large={853} />
+      <ul class="situation-grid">
+        {t.situations.items.map((item) => (
+          <li data-reveal>
+            <a class="situation-card" href={sellUrl + '#offer'} data-situation={item.title}>
+              <span class="icon" aria-hidden="true">{item.icon}</span>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+              <span class="card-link" aria-hidden="true">{t.situations.pick}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
     <div class="section-cta">
       <a class="btn btn-primary" href={sellUrl}>{t.situations.cta}</a>
     </div>
@@ -92,7 +102,7 @@ const investUrl = routes.investors[lang];
     </div>
     <ul class="pillars">
       {t.why.items.map((item) => (
-        <li class="pillar">
+        <li class="pillar" data-reveal>
           <h3>{item.title}</h3>
           <p>{item.text}</p>
         </li>
@@ -109,7 +119,7 @@ const investUrl = routes.investors[lang];
     </div>
     <div class="journeys">
       {[t.how.seller, t.how.investor].map((journey) => (
-        <div class="journey">
+        <div class="journey" data-reveal>
           <h3>{journey.title}</h3>
           <ol class="journey-steps">
             {journey.steps.map((step, i) => (
