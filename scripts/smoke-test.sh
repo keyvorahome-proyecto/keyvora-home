@@ -8,13 +8,13 @@ check_status() { # path expected_status [expected_location]
   local out code loc
   out=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "$BASE$1")
   code=${out%% *}; loc=${out#* }
-  if [[ "$code" != "$2" ]]; then echo "FAIL $1 -> $code (expected $2)"; fail=1; return; fi
-  if [[ -n "${3:-}" && "$loc" != "$BASE$3" ]]; then echo "FAIL $1 -> $loc (expected $BASE$3)"; fail=1; return; fi
+  if [[ "$code" != "$2" ]]; then echo "::error::FAIL $1 -> $code (expected $2)"; fail=1; return; fi
+  if [[ -n "${3:-}" && "$loc" != "$BASE$3" ]]; then echo "::error::FAIL $1 -> $loc (expected $BASE$3)"; fail=1; return; fi
   echo "ok   $1 -> $code ${3:-}"
 }
 
 check_contains() { # path text
-  if curl -sL "$BASE$1" | grep -qF -- "$2"; then echo "ok   $1 contains: $2"; else echo "FAIL $1 missing: $2"; fail=1; fi
+  if curl -sL "$BASE$1" | grep -qF -- "$2"; then echo "ok   $1 contains: $2"; else echo "::error::FAIL $1 missing: $2"; fail=1; fi
 }
 
 # Pages

@@ -21,6 +21,11 @@ jobs:
           for i in $(seq 1 30); do curl -sf http://127.0.0.1:4321/ >/dev/null && break; sleep 1; done
       - name: Smoke test
         run: scripts/smoke-test.sh http://127.0.0.1:4321
+      - name: Report server log
+        if: failure()
+        run: |
+          tail -n 20 server.log | while IFS= read -r line; do echo "::warning::server: $line"; done
+          find dist -maxdepth 3 | head -40 | while IFS= read -r line; do echo "::notice::dist: $line"; done
       - name: Docker build
         run: docker build -t keyvora-home .
       - name: Upload build output
