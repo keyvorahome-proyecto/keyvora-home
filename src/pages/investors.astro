@@ -1,44 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For Investors | Off-Market Cleveland Real Estate Opportunities | Keyvora Home</title>
-<meta name="description" content="Join Keyvora Home's buyers list to receive off-market real estate investment opportunities in Cleveland, Ohio, matched to your strategy.">
-<link rel="canonical" href="https://keyvorahome.online/for-investors.html">
-<link rel="alternate" hreflang="en" href="https://keyvorahome.online/for-investors.html">
-<link rel="alternate" hreflang="es" href="https://keyvorahome.online/es/for-investors.html">
-<link rel="alternate" hreflang="x-default" href="https://keyvorahome.online/for-investors.html">
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-<link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-
-<header class="site-header">
-  <div class="header-inner">
-    <a class="brand" href="index.html">
-      <img src="assets/logo.jpg" alt="Keyvora Home logo">
-      <span class="brand-name">KEYVORA <span class="accent">HOME</span></span>
-    </a>
-    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-    <div class="nav">
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="for-investors.html">For Investors</a></li>
-        <li><a href="sell-your-house.html">Sell Your House</a></li>
-        <li><a href="#faq">FAQ</a></li>
-      </ul>
-      <div class="lang-switch">
-        <a href="for-investors.html" class="active">EN</a>
-        <a href="es/for-investors.html">ES</a>
-      </div>
-    </div>
-  </div>
-</header>
-
-<main>
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+  lang="en"
+  route="investors"
+  title={'For Investors | Off-Market Cleveland Real Estate Opportunities | Keyvora Home'}
+  description={"Join Keyvora Home's buyers list to receive off-market real estate investment opportunities in Cleveland, Ohio, matched to your strategy."}
+  faqHref="#faq"
+>
   <section class="hero">
     <svg class="hero-roofline" viewBox="0 0 340 160" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M20 140 L170 15 L320 140" stroke="#A38D78" stroke-width="2"/>
@@ -185,28 +154,4 @@
       </div>
     </div>
   </section>
-</main>
-
-<footer class="site-footer">
-  <div class="container">
-    <div class="footer-top">
-      <img src="assets/logo.jpg" alt="Keyvora Home logo">
-      <span class="footer-brand">Keyvora Home</span>
-    </div>
-    <p class="footer-contact">
-      <a href="mailto:contact@keyvorahome.online">contact@keyvorahome.online</a>
-      <span class="sep">·</span>
-      <a href="tel:+12166772783">(216) 677-2783</a>
-    </p>
-    <div class="footer-social">
-      <a href="https://www.facebook.com/share/1DsGpWwTpB/?mibextid=LQQJ4d" target="_blank" rel="noopener noreferrer">Facebook</a>
-    </div>
-    <div class="jv-block">
-      Are you a wholesaler or investor interested in a JV? <a href="mailto:contact@keyvorahome.online?subject=JV%20Inquiry">Get in touch</a>
-    </div>
-  </div>
-</footer>
-
-<script src="js/main.js"></script>
-</body>
-</html>
+</BaseLayout>

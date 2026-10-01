@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap');
-
 :root {
   --color-text: #2D2D2D;
   --color-text-muted: #6B6660;
@@ -522,3 +520,64 @@ img { max-width: 100%; display: block; }
 
 /* Honeypot field: hidden from people, visible to bots */
 .hp-field { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+
+/* ===== Accessibility base (Phase 1) ===== */
+:root {
+  --color-gold-text: #806A55;   /* gold for small text: 4.5:1+ on both backgrounds */
+  --color-field-border: #9C9389; /* 3:1 against white for form fields */
+}
+
+.eyebrow,
+.step-number { color: var(--color-gold-text); }
+
+.field input,
+.field select,
+.field textarea {
+  font-size: 1rem; /* 16px avoids iOS zoom on focus */
+  border-color: var(--color-field-border);
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -100px;
+  z-index: 1000;
+  padding: 10px 16px;
+  background: var(--color-text);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+.skip-link:focus { top: 12px; }
+
+main:focus { outline: none; }
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.site-footer a:focus-visible { outline-color: var(--color-gold); }
+
+.lang-switch a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+@media (max-width: 720px) {
+  /* Collapsed menu links must not be reachable with Tab */
+  .nav { visibility: hidden; transition: max-height 0.2s ease, visibility 0s linear 0.2s; }
+  .nav.open { visibility: visible; transition: max-height 0.2s ease; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
