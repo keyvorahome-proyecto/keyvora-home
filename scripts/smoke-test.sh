@@ -54,4 +54,17 @@ check_contains /sell-your-house 'no fees or commissions'
 check_contains /sell-your-house 'Cuyahoga County'
 check_contains /es/sell-your-house 'condado de Cuyahoga'
 
+# Home v2 (spec 14-27)
+check_contains / 'Your Cleveland property. Your options.'
+check_contains / "I'm looking for investments"
+check_contains / 'What brings you to Keyvora?'
+check_contains / 'Every property has a story.'
+check_contains / 'id="how-it-works"'
+check_contains / 'Start with your property.'
+check_contains / 'data-quick-entry'
+check_contains / 'class="sticky-cta"'
+check_contains /es/ 'Tu propiedad en Cleveland. Tus opciones.'
+check_contains /es/ '¿Qué te trae a Keyvora?'
+check_contains /investors 'Join investor network'
+
 exit $fail

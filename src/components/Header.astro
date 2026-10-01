@@ -29,11 +29,12 @@ const r = (key: RouteKey) => routes[key][lang];
     </button>
     <div class="nav" id="site-nav">
       <ul class="nav-links">
-        <li><a href={r('home')}>{t.navHome}</a></li>
-        <li><a href={r('investors')}>{t.navInvestors}</a></li>
         <li><a href={r('sell')}>{t.navSell}</a></li>
+        <li><a href={r('investors')}>{t.navInvestors}</a></li>
+        <li><a href={r('home') + '#how-it-works'}>{t.navHow}</a></li>
         <li><a href={faqHref}>{t.navFaq}</a></li>
       </ul>
+      <a class="btn btn-primary nav-cta" href={r('sell')}>{t.navCta}</a>
       <div class="lang-switch">
         <a href={routes[route].en} class:list={{ active: lang === 'en' }} lang="en" hreflang="en">EN</a>
         <a href={routes[route].es} class:list={{ active: lang === 'es' }} lang="es" hreflang="es">ES</a>

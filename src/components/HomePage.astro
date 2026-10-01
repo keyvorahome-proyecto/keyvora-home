@@ -1,0 +1,143 @@
+---
+import { home } from '../i18n/home';
+import { routes, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = home[lang];
+const sellUrl = routes.sell[lang];
+const investUrl = routes.investors[lang];
+---
+<section class="hero">
+  <svg class="hero-roofline" viewBox="0 0 340 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M20 140 L170 15 L320 140" stroke="#A38D78" stroke-width="2"/>
+  </svg>
+  <div class="container hero-inner">
+    <div class="eyebrow">{t.hero.eyebrow}</div>
+    <h1>{t.hero.h1}</h1>
+    <p class="lead">{t.hero.lead}</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href={sellUrl}>{t.hero.sellCta}</a>
+      <a class="btn btn-secondary" href={investUrl}>{t.hero.investCta}</a>
+    </div>
+    <p class="hero-micro">{t.hero.micro}</p>
+  </div>
+</section>
+
+<section class="section section-tight" aria-labelledby="selector-title">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">{t.selector.eyebrow}</div>
+      <h2 id="selector-title">{t.selector.h2}</h2>
+    </div>
+    <div class="path-cards">
+      <div class="path-card">
+        <div class="icon" aria-hidden="true">🏠</div>
+        <h3>{t.selector.seller.title}</h3>
+        <p>{t.selector.seller.text}</p>
+        <a class="btn btn-primary" href={sellUrl}>{t.selector.seller.cta}</a>
+      </div>
+      <div class="path-card">
+        <div class="icon" aria-hidden="true">🏗️</div>
+        <h3>{t.selector.investor.title}</h3>
+        <p>{t.selector.investor.text}</p>
+        <a class="btn btn-primary" href={investUrl}>{t.selector.investor.cta}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="situations-title">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">{t.situations.eyebrow}</div>
+      <h2 id="situations-title">{t.situations.h2}</h2>
+      <p>{t.situations.intro}</p>
+    </div>
+    <ul class="situation-grid">
+      {t.situations.items.map((item) => (
+        <li class="situation-card">
+          <span class="icon" aria-hidden="true">{item.icon}</span>
+          <h3>{item.title}</h3>
+          <p>{item.text}</p>
+        </li>
+      ))}
+    </ul>
+    <div class="section-cta">
+      <a class="btn btn-primary" href={sellUrl}>{t.situations.cta}</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="why-title">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">{t.why.eyebrow}</div>
+      <h2 id="why-title">{t.why.h2}</h2>
+    </div>
+    <ul class="pillars">
+      {t.why.items.map((item) => (
+        <li class="pillar">
+          <h3>{item.title}</h3>
+          <p>{item.text}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<section class="section section-alt" id="how-it-works" aria-labelledby="how-title">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">{t.how.eyebrow}</div>
+      <h2 id="how-title">{t.how.h2}</h2>
+    </div>
+    <div class="journeys">
+      {[t.how.seller, t.how.investor].map((journey) => (
+        <div class="journey">
+          <h3>{journey.title}</h3>
+          <ol class="journey-steps">
+            {journey.steps.map((step, i) => (
+              <li>
+                <span class="step-number" aria-hidden="true">{i + 1}</span>
+                <div>
+                  <h4>{step.title}</h4>
+                  <p>{step.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="cleveland-title">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">{t.cleveland.eyebrow}</div>
+      <h2 id="cleveland-title">{t.cleveland.h2}</h2>
+      <p>{t.cleveland.text}</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="quick-title">
+  <div class="container">
+    <div class="quick-entry">
+      <h2 id="quick-title">{t.quick.h2}</h2>
+      <p>{t.quick.text}</p>
+      <form class="quick-form" data-quick-entry action={sellUrl} method="get">
+        <label for="quick-address">{t.quick.label}</label>
+        <div class="quick-row">
+          <input id="quick-address" type="text" autocomplete="street-address" placeholder={t.quick.placeholder} maxlength="300">
+          <button type="submit" class="btn btn-primary">{t.quick.cta}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

@@ -4,57 +4,51 @@ import { z } from 'astro/zod';
 /* Allowed values — must match the Airtable select options exactly.    */
 /* ------------------------------------------------------------------ */
 
-export const PROPERTY_TYPES = [
-  'Single-family',
-  'Multi-family (2-4 units)',
-  'Condo / Townhouse',
-  'Mobile home',
-  'Vacant land',
+export const PROPERTY_TYPES = ['Single Family', 'Duplex', 'Triplex', 'Fourplex', 'Multifamily', 'Other'] as const;
+
+export const INVESTOR_PROPERTY_TYPES = [
+  'Single Family',
+  'Duplex',
+  'Triplex',
+  'Fourplex',
+  'Multifamily',
+  'Land',
   'Other'
 ] as const;
 
 export const CONDITIONS = [
   'Move-in ready',
-  'Needs minor repairs',
-  'Needs major repairs',
-  'Needs full rehab'
+  'Needs some work',
+  'Needs significant repairs',
+  'Major renovation',
+  'Not sure'
 ] as const;
 
 export const SITUATIONS = [
+  'I simply want to sell',
   'Inherited property',
   'Vacant property',
-  'Behind on payments / foreclosure',
-  'Tired landlord / tenant issues',
-  'Divorce / separation',
+  'Rental property',
   'Relocating',
-  'Too many repairs',
-  'Downsizing',
+  'Financial situation',
+  'Property needs too many repairs',
   'Other'
 ] as const;
 
 export const TIMELINES = [
   'As soon as possible',
   'Within 30 days',
-  '1-3 months',
-  '3-6 months',
+  '1–3 months',
+  '3–6 months',
+  'More than 6 months',
   'Just exploring'
 ] as const;
 
-export const STRATEGIES = [
-  'Fix & Flip',
-  'Buy & Hold',
-  'BRRRR',
-  'Wholetail',
-  'Wholesale / JV',
-  'Creative / owner finance'
-] as const;
+export const STRATEGIES = ['Fix & Flip', 'Buy & Hold', 'BRRRR', 'Development', 'Wholesale / Assignment', 'Other'] as const;
 
-export const FUNDING = [
-  'Cash',
-  'Hard money / private lender',
-  'Conventional / DSCR loan',
-  'Other'
-] as const;
+export const PREFERRED_CONDITIONS = ['Turnkey', 'Light rehab', 'Heavy rehab', 'Any condition'] as const;
+
+export const FUNDING = ['Cash', 'Hard Money', 'Private Money', 'Other'] as const;
 
 /* ------------------------------------------------------------------ */
 /* Schemas                                                             */
@@ -87,6 +81,7 @@ const common = {
     .optional(),
   language: z.enum(['en', 'es']).optional().default('en'),
   leadSource: optionalText(300),
+  landingPage: optionalText(200),
   // Honeypot: must stay empty. Checked before validation.
   website_url: z.string().optional()
 };
@@ -132,13 +127,14 @@ export const investorSchema = z
     strategy: z.enum(['fix_and_flip', 'buy_and_hold']).optional(),
     budgetRange: optionalText(200),
     // Structured criteria (new investor profile builder).
-    propertyTypes: z.array(z.enum(PROPERTY_TYPES)).max(PROPERTY_TYPES.length).optional().default([]),
+    propertyTypes: z.array(z.enum(INVESTOR_PROPERTY_TYPES)).max(INVESTOR_PROPERTY_TYPES.length).optional().default([]),
     strategies: z.array(z.enum(STRATEGIES)).max(STRATEGIES.length).optional().default([]),
     minPrice: z.number().int().min(0).max(100_000_000).nullable().optional(),
     maxPrice: z.number().int().min(0).max(100_000_000).nullable().optional(),
     zips: z.array(z.string().regex(/^\d{5}$/)).max(50).optional().default([]),
-    conditionAccepted: z.array(z.enum(CONDITIONS)).max(CONDITIONS.length).optional().default([]),
-    funding: z.enum(FUNDING).optional()
+    neighborhoods: z.array(text(80).min(1)).max(30).optional().default([]),
+    preferredCondition: z.array(z.enum(PREFERRED_CONDITIONS)).max(PREFERRED_CONDITIONS.length).optional().default([]),
+    funding: z.array(z.enum(FUNDING)).max(FUNDING.length).optional().default([])
   })
   .refine((d) => Boolean(d.fullName || d.firstName), { message: 'required', path: ['fullName'] })
   .refine((d) => d.minPrice == null || d.maxPrice == null || d.minPrice <= d.maxPrice, {

@@ -9,44 +9,43 @@ const fullName = s(b.fullName) || [s(b.firstName), s(b.lastName)].filter(Boolean
 const email = s(b.email);
 const phone = s(b.phone);
 const legacyType = s(b.investorType);
-let funding = s(b.funding);
-if (!funding && legacyType === 'cash_buyer') funding = 'Cash';
+let funding = arr(b.funding);
+if (!funding.length && legacyType === 'cash_buyer') funding = ['Cash'];
 let strategies = arr(b.strategies);
 const legacyStrategy = { fix_and_flip: 'Fix & Flip', buy_and_hold: 'Buy & Hold' }[s(b.strategy)] || '';
 if (!strategies.length && legacyStrategy) strategies = [legacyStrategy];
 const propertyTypes = arr(b.propertyTypes);
-const conditionAccepted = arr(b.conditionAccepted);
+const preferredCondition = arr(b.preferredCondition);
+const neighborhoods = arr(b.neighborhoods);
 const zips = arr(b.zips).filter((z) => /^\d{5}$/.test(z));
 const minPrice = num(b.minPrice);
 const maxPrice = num(b.maxPrice);
 const inArea = zips.some((zip) => { const z = parseInt(zip, 10); return (z >= 44101 && z <= 44199) || [44017, 44022, 44040, 44070].includes(z); });
 
-// Scoring weights — adjust here.
-const W = {
-  profileComplete: 40,
-  phone: 20,
-  funding: { 'Cash': 20, 'Hard money / private lender': 10, 'Conventional / DSCR loan': 5, 'Other': 0 },
-  inArea: 10,
-  hasStrategy: 10
-};
-const HOT = 70;
-const WARM = 40;
+// Scoring weights (spec 81) — adjust here.
+const W = { profileComplete: 20, phone: 10, specificZip: 10, specificStrategy: 10, specificBudget: 10, funding: 5 };
+// Temperature thresholds (same scale as sellers, spec 80) — adjust here.
+const HOT = 50;
+const WARM = 25;
 
-const profileComplete = propertyTypes.length > 0 && strategies.length > 0 && minPrice !== null && zips.length > 0 && Boolean(funding);
-const qualified = propertyTypes.length > 0 || zips.length > 0 || minPrice !== null;
-let score = (profileComplete ? W.profileComplete : 0) + (phone ? W.phone : 0) + (W.funding[funding] || 0)
-  + (inArea ? W.inArea : 0) + (strategies.length ? W.hasStrategy : 0);
+const hasArea = zips.length > 0 || neighborhoods.length > 0;
+const hasBudget = minPrice !== null || maxPrice !== null;
+const specificStrategy = strategies.some((x) => x !== 'Other');
+const profileComplete = propertyTypes.length > 0 && strategies.length > 0 && hasBudget && hasArea && funding.length > 0;
+const qualified = propertyTypes.length > 0 || hasArea || hasBudget;
+let score = (profileComplete ? W.profileComplete : 0) + (phone ? W.phone : 0) + (hasArea ? W.specificZip : 0)
+  + (specificStrategy ? W.specificStrategy : 0) + (hasBudget ? W.specificBudget : 0) + (funding.length ? W.funding : 0);
 score = Math.min(100, score);
-const temperature = qualified ? (score >= HOT ? 'Hot' : score >= WARM ? 'Warm' : 'Cold') : '';
-const notifyTelegram = !qualified || temperature !== 'Cold';
+const temperature = qualified ? (score >= HOT ? 'Hot' : score >= WARM ? 'Warm' : 'Nurture') : '';
+const notifyTelegram = !qualified || temperature !== 'Nurture';
 
 const money = (v) => (v === null ? '' : '$' + v.toLocaleString('en-US'));
 const range = minPrice !== null || maxPrice !== null ? `${money(minPrice) || '$0'} – ${maxPrice === null ? 'sin máximo' : money(maxPrice)}` : s(b.budgetRange);
-const badge = qualified ? `${temperature === 'Hot' ? '🔥' : temperature === 'Warm' ? '🌤️' : '❄️'} ${temperature} (${score})` : '⚪ Sin calificar (formulario anterior)';
+const badge = qualified ? `${temperature === 'Hot' ? '🔥' : temperature === 'Warm' ? '🌤️' : '🌱'} ${temperature} (${score})` : '⚪ Sin calificar (formulario anterior)';
 const rows = [
   ['Nombre', fullName], ['Email', email], ['Teléfono', phone], ['Tipos', propertyTypes.join(', ')],
-  ['Estrategias', strategies.join(', ')], ['Rango', range], ['ZIPs', zips.join(', ')],
-  ['Estado aceptado', conditionAccepted.join(', ')], ['Financiación', funding || legacyType],
+  ['Estrategias', strategies.join(', ')], ['Rango', range], ['ZIPs', zips.join(', ')], ['Barrios', neighborhoods.join(', ')],
+  ['Estado preferido', preferredCondition.join(', ')], ['Financiación', funding.join(', ') || legacyType],
   ['Perfil completo', profileComplete ? 'Sí' : ''], ['Idioma', s(b.language).toUpperCase()]
 ].filter(([, v]) => v);
 
@@ -56,8 +55,9 @@ return {
     submittedAt: s(b.submittedAt) || new Date().toISOString(),
     language: s(b.language) === 'es' ? 'ES' : 'EN',
     leadSource: s(b.leadSource),
+    landingPage: s(b.landingPage),
     fullName, email, phone, legacyType, legacyStrategy, budgetRange: s(b.budgetRange),
-    propertyTypes, strategies, minPrice, maxPrice, zips, conditionAccepted, funding,
+    propertyTypes, strategies, minPrice, maxPrice, zips, neighborhoods, preferredCondition, funding,
     profileComplete, qualified, score: qualified ? score : null, temperature, notifyTelegram,
     notify: {
       subject: `Nuevo lead investor ${qualified ? temperature.toUpperCase() : ''}: ${fullName || email}`.replace(/\s+/g, ' '),
