@@ -15,14 +15,16 @@ const f = {
   'Min price': d.minPrice,
   'Max price': d.maxPrice,
   'ZIP codes': d.zips.join(', '),
-  'Condition accepted': d.conditionAccepted,
+  'Neighborhoods': d.neighborhoods.join(', '),
+  'Preferred condition': d.preferredCondition,
   'Funding': d.funding,
   'Profile complete': d.profileComplete,
   'Score': d.score,
   'Temperature': d.temperature,
   'Submission ID': d.submissionId,
   'Language': d.language,
-  'Lead source': d.leadSource
+  'Lead source': d.leadSource,
+  'Landing page': d.landingPage
 };
 const out = {};
 for (const [k, v] of Object.entries(f)) {

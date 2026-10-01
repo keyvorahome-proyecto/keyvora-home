@@ -9,9 +9,10 @@ interface Props {
   title: string;
   description: string;
   faqHref: string;
+  stickyCta?: { href: string; label: string };
 }
 
-const { lang, route, title, description, faqHref } = Astro.props;
+const { lang, route, title, description, faqHref, stickyCta } = Astro.props;
 const site = 'https://keyvorahome.online';
 const canonical = site + routes[route][lang];
 const enUrl = site + routes[route].en;
@@ -34,7 +35,7 @@ const esUrl = site + routes[route].es;
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap">
 <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body>
+<body class:list={{ 'has-sticky-cta': Boolean(stickyCta) }}>
 <a class="skip-link" href="#main">{ui[lang].skip}</a>
 
 <Header lang={lang} route={route} faqHref={faqHref} />
@@ -44,6 +45,12 @@ const esUrl = site + routes[route].es;
 </main>
 
 <Footer lang={lang} />
+
+{stickyCta && (
+  <div class="sticky-cta">
+    <a class="btn btn-primary btn-block" href={stickyCta.href}>{stickyCta.label}</a>
+  </div>
+)}
 
 <script is:inline src="/js/main.js"></script>
 </body>

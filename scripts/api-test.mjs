@@ -70,7 +70,7 @@ check('seller forwarded to seller webhook with secret', last && last.url.endsWit
 check('seller payload has server timestamp and submission ID', last && last.body.submittedAt && last.body.submissionId === 'abcdef12-3456' && !('website_url' in last.body), JSON.stringify(last?.body));
 
 // Valid new-format seller
-r = await post('/api/seller', { address: '1 Elm St', zip: '44105', firstName: 'Ann', phone: '(216) 555-1234', propertyType: 'Single-family', condition: 'Needs major repairs', situation: ['Inherited property'], timeline: 'Within 30 days' });
+r = await post('/api/seller', { address: '1 Elm St', zip: '44105', firstName: 'Ann', phone: '(216) 555-1234', propertyType: 'Duplex', condition: 'Major renovation', situation: ['Inherited property', 'Vacant property'], timeline: 'Within 30 days', landingPage: '/' });
 check('valid structured seller -> 200', r.status === 200, JSON.stringify(r.json));
 check('generated submission ID when missing', received[received.length - 1]?.body.submissionId?.length >= 8);
 
@@ -78,8 +78,13 @@ check('generated submission ID when missing', received[received.length - 1]?.bod
 r = await post('/api/investor', { fullName: 'Old Form', email: 'o@c.com', investorType: 'cash_buyer', strategy: 'fix_and_flip', budgetRange: '100k-200k' });
 check('valid legacy investor -> 200', r.status === 200, JSON.stringify(r.json));
 check('investor forwarded to investor webhook', received[received.length - 1]?.url.endsWith('/investor'));
-r = await post('/api/investor', { firstName: 'New', email: 'n@c.com', phone: '2165550000', propertyTypes: ['Single-family'], strategies: ['BRRRR'], minPrice: 50000, maxPrice: null, zips: ['44105'], funding: 'Cash' });
+r = await post('/api/investor', { firstName: 'New', email: 'n@c.com', phone: '2165550000', propertyTypes: ['Duplex', 'Land'], strategies: ['BRRRR', 'Development'], minPrice: 50000, maxPrice: null, zips: ['44105'], neighborhoods: ['Tremont'], preferredCondition: ['Light rehab'], funding: ['Cash', 'Private Money'] });
 check('valid structured investor -> 200', r.status === 200, JSON.stringify(r.json));
+
+r = await post('/api/investor', { fullName: 'X', email: 'x@c.com', funding: 'Cash' });
+check('investor funding must be a list -> 400', r.status === 400 && r.json.fields?.funding, JSON.stringify(r.json));
+r = await post('/api/seller', { address: '1 Elm St', contact: 'a@b.com', propertyType: 'Single-family' });
+check('old (non-spec) property type -> 400', r.status === 400 && r.json.fields?.propertyType, JSON.stringify(r.json));
 
 // Rate limit: same IP, 6th request is blocked
 const ip = '10.9.9.9';

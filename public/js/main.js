@@ -57,6 +57,26 @@ function getFormMessages() {
 document.addEventListener('DOMContentLoaded', () => {
   captureLeadSource();
 
+  // Home "Start with your property": pass the address to the seller form
+  // through sessionStorage (not the URL, so it never shows up in analytics).
+  const PREFILL_KEY = 'keyvora_prefill_address';
+  document.querySelectorAll('form[data-quick-entry]').forEach((quick) => {
+    quick.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = quick.querySelector('input');
+      const value = input ? input.value.trim() : '';
+      try { if (value) sessionStorage.setItem(PREFILL_KEY, value); } catch (err) { /* storage unavailable */ }
+      window.location.href = quick.getAttribute('action') + '#offer';
+    });
+  });
+  const addressField = document.querySelector('form[data-lead-form="seller"] #address');
+  if (addressField && !addressField.value) {
+    try {
+      const saved = sessionStorage.getItem(PREFILL_KEY);
+      if (saved) { addressField.value = saved; sessionStorage.removeItem(PREFILL_KEY); }
+    } catch (err) { /* storage unavailable */ }
+  }
+
   // Mobile nav toggle
   const navToggle = document.querySelector('.nav-toggle');
   const nav = document.querySelector('.nav');
@@ -134,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
       payload.submissionId = form.dataset.submissionId;
       payload.language = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase() === 'es' ? 'es' : 'en';
       payload.leadSource = getLeadSource();
+      payload.landingPage = window.location.pathname;
 
       if (submitBtn) submitBtn.disabled = true;
       if (statusEl) {
