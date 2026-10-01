@@ -1,0 +1,43 @@
+---
+import { routes, ui, type Lang, type RouteKey } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  route: RouteKey;
+  faqHref: string;
+}
+
+const { lang, route, faqHref } = Astro.props;
+const t = ui[lang];
+const r = (key: RouteKey) => routes[key][lang];
+---
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href={r('home')}>
+      <img src="/assets/logo.jpg" alt={t.logoAlt} width="40" height="40">
+      <span class="brand-name">KEYVORA <span class="accent">HOME</span></span>
+    </a>
+    <button
+      class="nav-toggle"
+      aria-label={t.openMenu}
+      aria-expanded="false"
+      aria-controls="site-nav"
+      data-label-open={t.openMenu}
+      data-label-close={t.closeMenu}
+    >
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav" id="site-nav">
+      <ul class="nav-links">
+        <li><a href={r('home')}>{t.navHome}</a></li>
+        <li><a href={r('investors')}>{t.navInvestors}</a></li>
+        <li><a href={r('sell')}>{t.navSell}</a></li>
+        <li><a href={faqHref}>{t.navFaq}</a></li>
+      </ul>
+      <div class="lang-switch">
+        <a href={routes[route].en} class:list={{ active: lang === 'en' }} lang="en" hreflang="en">EN</a>
+        <a href={routes[route].es} class:list={{ active: lang === 'es' }} lang="es" hreflang="es">ES</a>
+      </div>
+    </div>
+  </div>
+</header>

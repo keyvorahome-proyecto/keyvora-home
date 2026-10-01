@@ -1,0 +1,50 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { routes, ui, type Lang, type RouteKey } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  route: RouteKey;
+  title: string;
+  description: string;
+  faqHref: string;
+}
+
+const { lang, route, title, description, faqHref } = Astro.props;
+const site = 'https://keyvorahome.online';
+const canonical = site + routes[route][lang];
+const enUrl = site + routes[route].en;
+const esUrl = site + routes[route].es;
+---
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+<meta name="description" content={description}>
+<link rel="canonical" href={canonical}>
+<link rel="alternate" hreflang="en" href={enUrl}>
+<link rel="alternate" hreflang="es" href={esUrl}>
+<link rel="alternate" hreflang="x-default" href={enUrl}>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">{ui[lang].skip}</a>
+
+<Header lang={lang} route={route} faqHref={faqHref} />
+
+<main id="main" tabindex="-1">
+  <slot />
+</main>
+
+<Footer lang={lang} />
+
+<script is:inline src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "keyvora-home",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "start": "node ./dist/server/entry.mjs"
+  },
+  "engines": {
+    "node": ">=20.3.0"
+  },
+  "dependencies": {
+    "astro": "^5.14.0",
+    "@astrojs/node": "^9.4.0",
+    "@astrojs/sitemap": "^3.6.0"
+  }
+}

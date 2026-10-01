@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'feat/**', 'fix/**']
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
+      - name: Start server
+        run: |
+          HOST=127.0.0.1 PORT=4321 node ./dist/server/entry.mjs > server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:4321/ >/dev/null && break; sleep 1; done
+      - name: Smoke test
+        run: scripts/smoke-test.sh http://127.0.0.1:4321
+      - name: Report server log
+        if: failure()
+        run: |
+          tail -n 20 server.log | while IFS= read -r line; do echo "::warning::server: $line"; done
+          find dist -maxdepth 3 | head -40 | while IFS= read -r line; do echo "::notice::dist: $line"; done
+      - name: Visual comparison against live site
+        continue-on-error: true
+        run: |
+          npm install --no-save --no-audit --no-fund playwright pixelmatch pngjs
+          npx playwright install --with-deps chromium
+          node scripts/visual-compare.mjs http://127.0.0.1:4321 https://keyvorahome.online
+      - name: Docker build
+        run: docker build -t keyvora-home .
+      - name: Upload build output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: |
+            dist/client
+            server.log

@@ -1,0 +1,29 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <img src="/assets/logo.jpg" alt="" width="32" height="32">
+      <span class="footer-brand">Keyvora Home</span>
+    </div>
+    <p class="footer-contact">
+      <a href="mailto:keyvorahome@gmail.com">keyvorahome@gmail.com</a>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href="tel:+12166772783">(216) 677-2783</a>
+    </p>
+    <div class="footer-social">
+      <a href="https://www.facebook.com/share/1DsGpWwTpB/?mibextid=LQQJ4d" target="_blank" rel="noopener noreferrer">Facebook</a>
+    </div>
+    <div class="jv-block">
+      {t.jvText} <a href="mailto:keyvorahome@gmail.com?subject=JV%20Inquiry">{t.jvLink}</a>
+    </div>
+  </div>
+</footer>

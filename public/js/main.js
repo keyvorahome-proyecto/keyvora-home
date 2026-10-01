@@ -28,9 +28,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const navToggle = document.querySelector('.nav-toggle');
   const nav = document.querySelector('.nav');
   if (navToggle && nav) {
-    navToggle.addEventListener('click', () => {
-      const isOpen = nav.classList.toggle('open');
+    const setNavOpen = (isOpen) => {
+      nav.classList.toggle('open', isOpen);
       navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      const label = isOpen ? navToggle.dataset.labelClose : navToggle.dataset.labelOpen;
+      if (label) navToggle.setAttribute('aria-label', label);
+    };
+    navToggle.addEventListener('click', () => {
+      setNavOpen(!nav.classList.contains('open'));
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('open')) {
+        setNavOpen(false);
+        navToggle.focus();
+      }
     });
   }
 
