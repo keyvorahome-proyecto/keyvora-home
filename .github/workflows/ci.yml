@@ -17,10 +17,16 @@ jobs:
       - run: npm run build
       - name: Start server
         run: |
-          HOST=127.0.0.1 PORT=4321 node ./dist/server/entry.mjs > server.log 2>&1 &
+          HOST=127.0.0.1 PORT=4321 \
+          N8N_WEBHOOK_SECRET=test-secret \
+          N8N_SELLER_WEBHOOK_URL=http://127.0.0.1:4999/webhook/keyvora/seller \
+          N8N_INVESTOR_WEBHOOK_URL=http://127.0.0.1:4999/webhook/keyvora/investor \
+          node ./dist/server/entry.mjs > server.log 2>&1 &
           for i in $(seq 1 30); do curl -sf http://127.0.0.1:4321/ >/dev/null && break; sleep 1; done
       - name: Smoke test
         run: scripts/smoke-test.sh http://127.0.0.1:4321
+      - name: API tests
+        run: N8N_WEBHOOK_SECRET=test-secret node scripts/api-test.mjs http://127.0.0.1:4321
       - name: Report server log
         if: failure()
         run: |
