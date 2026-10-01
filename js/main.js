@@ -5,6 +5,24 @@ const WEBHOOK_URLS = {
   seller: 'https://n8n.keyvorahome.online/webhook/keyvora-seller-lead'
 };
 
+const FORM_MESSAGES = {
+  en: {
+    sending: 'Sending…',
+    success: "Thank you — we've received your information and will be in touch.",
+    error: 'Something went wrong. Please try again or email us directly.'
+  },
+  es: {
+    sending: 'Enviando…',
+    success: '¡Gracias! Recibimos tus datos y nos vamos a contactar con vos.',
+    error: 'Algo salió mal. Probá de nuevo o escribinos por email.'
+  }
+};
+
+function getFormMessages() {
+  const lang = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase();
+  return FORM_MESSAGES[lang] || FORM_MESSAGES.en;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Mobile nav toggle
   const navToggle = document.querySelector('.nav-toggle');
@@ -44,10 +62,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const url = WEBHOOK_URLS[type];
       const statusEl = form.querySelector('.form-status');
       const submitBtn = form.querySelector('button[type="submit"]');
+      const messages = getFormMessages();
 
       const formData = new FormData(form);
       const data = {};
       formData.forEach((value, key) => { data[key] = value; });
+
+      // Honeypot filled: likely a bot. Show success without sending.
+      if (String(data.website_url || '').trim() !== '') {
+        if (statusEl) {
+          statusEl.textContent = messages.success;
+          statusEl.className = 'form-status success';
+        }
+        form.reset();
+        return;
+      }
 
       const payload = {
         source: type,
@@ -57,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (submitBtn) submitBtn.disabled = true;
       if (statusEl) {
-        statusEl.textContent = 'Sending…';
+        statusEl.textContent = messages.sending;
         statusEl.className = 'form-status';
       }
 
@@ -71,13 +100,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!res.ok) throw new Error('Request failed');
 
         if (statusEl) {
-          statusEl.textContent = "Thank you — we've received your information and will be in touch.";
+          statusEl.textContent = messages.success;
           statusEl.className = 'form-status success';
         }
         form.reset();
       } catch (err) {
         if (statusEl) {
-          statusEl.textContent = 'Something went wrong. Please try again or email us directly.';
+          statusEl.textContent = messages.error;
           statusEl.className = 'form-status error';
         }
       } finally {
