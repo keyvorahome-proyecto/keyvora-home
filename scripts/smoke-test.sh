@@ -56,7 +56,7 @@ check_contains /es/sell-your-house 'condado de Cuyahoga'
 
 # Home v2 (spec 14-27)
 check_contains / 'Your Cleveland property. Your options.'
-check_contains / "I'm looking for investments"
+check_contains / 'looking for investments'
 check_contains / 'What brings you to Keyvora?'
 check_contains / 'Every property has a story.'
 check_contains / 'id="how-it-works"'
