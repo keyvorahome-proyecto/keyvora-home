@@ -4,8 +4,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 <BaseLayout
   lang="es"
   route="sell"
-  title={'Vendé tu Casa Rápido en Cleveland, Ohio | Keyvora Home'}
-  description={'Vendé tu casa en Cleveland, Ohio rápido, tal como está, sin reparaciones, sin visitas y sin comisiones de agentes. Recibí una oferta en efectivo sin compromiso de Keyvora Home.'}
+  title={'Vendé tu Casa en Cleveland, Ohio, en tus Tiempos | Keyvora Home'}
+  description={'Vendé tu casa en Cleveland, Ohio tal como está y en tus tiempos: sin reparaciones, sin visitas y sin fees ni comisiones cobrados por Keyvora. Trabajamos con compradores que pagan en efectivo. Sin compromiso.'}
   faqHref="#faq"
 >
   <section class="hero">
@@ -14,10 +14,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     </svg>
     <div class="container hero-inner">
       <div class="eyebrow">Vender mi Casa</div>
-      <h1>Vendé tu casa en Cleveland rápido — sin reparaciones, sin comisiones</h1>
-      <p class="lead">Sea cual sea el estado o la situación, Keyvora Home hace que vender de forma directa sea simple, en tus tiempos, sin las complicaciones habituales de publicar una casa en el mercado.</p>
+      <h1>Vendé tu casa en Cleveland en tus tiempos — tal como está, sin reparaciones</h1>
+      <p class="lead">Sea cual sea el estado o la situación, Keyvora Home hace que vender de forma directa sea simple, en tus tiempos, sin las complicaciones habituales de publicar una casa en el mercado. Trabajamos con compradores que pagan en efectivo, y Keyvora no te cobra fees ni comisiones.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="#offer">Quiero mi oferta en efectivo</a>
+        <a class="btn btn-primary" href="#offer">Quiero que revisen mi propiedad</a>
       </div>
     </div>
   </section>
@@ -32,8 +32,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </div>
         <div class="value-item">
           <div class="icon">⏱️</div>
-          <h3>Sin esperas</h3>
-          <p>Evitá meses en el mercado — avanzá a tu propio ritmo.</p>
+          <h3>En tus tiempos</h3>
+          <p>Sin publicar la casa — vos elegís el ritmo que te conviene.</p>
         </div>
         <div class="value-item">
           <div class="icon">🚪</div>
@@ -93,7 +93,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <label for="reason">Motivo de venta (opcional)</label>
           <input type="text" id="reason" name="reason" placeholder="ej. mudanza, propiedad heredada, evitar reparaciones" aria-label="Motivo de venta">
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Quiero mi oferta en efectivo</button>
+        <button type="submit" class="btn btn-primary btn-block">Quiero que revisen mi propiedad</button>
         <p class="form-note">No hay ninguna obligación de aceptar la oferta. Simplemente nos vamos a contactar para conocer más sobre tu propiedad y tu situación.</p>
         <div class="form-status" role="status" aria-live="polite"></div>
       </form>
@@ -133,6 +133,24 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           </button>
           <div class="faq-answer" id="faq-answer-3" role="region">
             <p>Para nada. Enviar tus datos solo da inicio a una conversación — nunca estás obligado a aceptar ninguna oferta que te presentemos.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4">
+            ¿En qué zonas trabajan?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer" id="faq-answer-4" role="region">
+            <p>Trabajamos con propietarios en Cleveland y en todo el condado de Cuyahoga, Ohio.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5">
+            ¿Cobran algún fee o comisión?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer" id="faq-answer-5" role="region">
+            <p>No. Keyvora Home no te cobra ningún fee ni comisión. Los costos de cierre habituales, como los de título y escrow, se manejan a través de la title company y te los explicamos antes de que firmes nada.</p>
           </div>
         </div>
       </div>

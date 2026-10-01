@@ -43,4 +43,15 @@ check_contains /sell-your-house 'data-lead-form="seller"'
 check_contains /sell-your-house 'name="website_url"'
 check_contains /investors '<link rel="canonical" href="https://keyvorahome.online/investors">'
 
+# Copy rules (owner decision D7): claims removed from the site
+for p in / /sell-your-house /investors /es/ /es/sell-your-house /es/investors; do
+  page=$(curl -sL "$BASE$p")
+  for phrase in 'cash offer' 'sell fast' 'House Fast' 'hidden costs' 'widely available' 'oferta en efectivo' 'costos ocultos' 'Vendé tu Casa Rápido'; do
+    if grep -qiF -- "$phrase" <<<"$page"; then echo "::error::FAIL $p contains banned phrase: $phrase"; fail=1; fi
+  done
+done
+check_contains /sell-your-house 'no fees or commissions'
+check_contains /sell-your-house 'Cuyahoga County'
+check_contains /es/sell-your-house 'condado de Cuyahoga'
+
 exit $fail

@@ -28,6 +28,7 @@ jobs:
           find dist -maxdepth 3 | head -40 | while IFS= read -r line; do echo "::notice::dist: $line"; done
       - name: Visual comparison against live site
         continue-on-error: true
+        timeout-minutes: 6
         run: |
           npm install --no-save --no-audit --no-fund playwright pixelmatch pngjs
           npx playwright install --with-deps chromium
