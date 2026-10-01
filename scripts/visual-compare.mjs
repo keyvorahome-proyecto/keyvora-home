@@ -19,7 +19,7 @@ const widths = [375, 768, 1280];
 const browser = await chromium.launch();
 async function shot(url, width) {
   const page = await browser.newPage({ viewport: { width, height: 800 } });
-  await page.goto(url, { waitUntil: 'networkidle' });
+  await page.goto(url, { waitUntil: 'load', timeout: 30000 });
   await page.evaluate(() => document.fonts.ready);
   const buf = await page.screenshot({ fullPage: true });
   await page.close();
