@@ -1,6 +1,7 @@
 ---
 import { home } from '../i18n/home';
 import { routes, type Lang } from '../i18n/ui';
+import Photo from './Photo.astro';
 
 interface Props {
   lang: Lang;
@@ -15,7 +16,8 @@ const investUrl = routes.investors[lang];
   <svg class="hero-roofline" viewBox="0 0 340 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path d="M20 140 L170 15 L320 140" stroke="#A38D78" stroke-width="2"/>
   </svg>
-  <div class="container hero-inner">
+  <div class="container hero-grid">
+  <div class="hero-inner">
     <div class="eyebrow">{t.hero.eyebrow}</div>
     <h1>{t.hero.h1}</h1>
     <p class="lead">{t.hero.lead}</p>
@@ -24,6 +26,16 @@ const investUrl = routes.investors[lang];
       <a class="btn btn-secondary" href={investUrl}>{t.hero.investCta}</a>
     </div>
     <p class="hero-micro">{t.hero.micro}</p>
+  </div>
+  <Photo
+    class="hero-photo"
+    name="cleveland-skyline-day"
+    alt={t.images.hero}
+    width={1280}
+    height={853}
+    sizes="(max-width: 720px) 100vw, 560px"
+    eager
+  />
   </div>
 </section>
 
@@ -117,16 +129,32 @@ const investUrl = routes.investors[lang];
 </section>
 
 <section class="section" aria-labelledby="cleveland-title">
-  <div class="container">
+  <div class="container split">
     <div class="section-head">
       <div class="eyebrow">{t.cleveland.eyebrow}</div>
       <h2 id="cleveland-title">{t.cleveland.h2}</h2>
       <p>{t.cleveland.text}</p>
     </div>
+    <Photo
+      class="split-photo"
+      name="cleveland-sign"
+      alt={t.images.sign}
+      width={1280}
+      height={854}
+      sizes="(max-width: 720px) 100vw, 540px"
+    />
   </div>
 </section>
 
-<section class="section section-alt" aria-labelledby="quick-title">
+<section class="section quick-band" aria-labelledby="quick-title">
+  <Photo
+    class="band-photo"
+    name="cleveland-skyline-dusk"
+    alt=""
+    width={1280}
+    height={720}
+    sizes="100vw"
+  />
   <div class="container">
     <div class="quick-entry">
       <h2 id="quick-title">{t.quick.h2}</h2>

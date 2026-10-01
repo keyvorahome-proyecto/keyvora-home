@@ -66,5 +66,8 @@ check_contains / 'class="sticky-cta"'
 check_contains /es/ 'Tu propiedad en Cleveland. Tus opciones.'
 check_contains /es/ '¿Qué te trae a Keyvora?'
 check_contains /investors 'Join investor network'
+check_contains / 'cleveland-skyline-day-1280.webp'
+check_contains /es/ 'El centro de Cleveland y el río Cuyahoga'
+for p in /images/cleveland-skyline-day-800.webp /images/cleveland-sign-1280.jpg /images/cleveland-skyline-dusk-1280.webp; do check_status "$p" 200; done
 
 exit $fail

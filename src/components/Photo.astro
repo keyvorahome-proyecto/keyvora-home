@@ -1,0 +1,28 @@
+---
+// Responsive photo: WebP at 800/1280px with a JPEG fallback.
+// Files live in public/images as <name>-800.webp, <name>-1280.webp, <name>-1280.jpg.
+interface Props {
+  name: string;
+  alt: string;
+  width: number;
+  height: number;
+  sizes: string;
+  eager?: boolean;
+  class?: string;
+}
+
+const { name, alt, width, height, sizes, eager = false, class: className } = Astro.props;
+const base = `/images/${name}`;
+---
+<picture class={className}>
+  <source type="image/webp" srcset={`${base}-800.webp 800w, ${base}-1280.webp 1280w`} sizes={sizes} />
+  <img
+    src={`${base}-1280.jpg`}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding={eager ? 'sync' : 'async'}
+    fetchpriority={eager ? 'high' : 'auto'}
+  />
+</picture>

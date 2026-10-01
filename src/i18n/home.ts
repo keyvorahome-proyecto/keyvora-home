@@ -87,7 +87,12 @@ export const home = {
       placeholder: 'Street address, city, ZIP',
       cta: 'Start property review →'
     },
-    sticky: 'Start property review'
+    sticky: 'Start property review',
+    images: {
+      hero: 'Downtown Cleveland skyline and the Cuyahoga River on a clear day',
+      sign: 'The Cleveland script sign by the lakefront, with downtown buildings behind it',
+      dusk: 'Downtown Cleveland skyline over the river at dusk'
+    }
   },
   es: {
     title: 'Keyvora Home | Tu propiedad en Cleveland. Tus opciones.',
@@ -173,6 +178,11 @@ export const home = {
       placeholder: 'Calle y número, ciudad, ZIP',
       cta: 'Revisar mi propiedad →'
     },
-    sticky: 'Revisar mi propiedad'
+    sticky: 'Revisar mi propiedad',
+    images: {
+      hero: 'El centro de Cleveland y el río Cuyahoga en un día despejado',
+      sign: 'El cartel de Cleveland junto al lago, con edificios del centro detrás',
+      dusk: 'El centro de Cleveland sobre el río al atardecer'
+    }
   }
 } satisfies Record<Lang, unknown>;
