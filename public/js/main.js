@@ -1,9 +1,40 @@
 // Keyvora Home — main.js
 
-const WEBHOOK_URLS = {
-  buyer: 'https://n8n.keyvorahome.online/webhook/keyvora-buyer-lead',
-  seller: 'https://n8n.keyvorahome.online/webhook/keyvora-seller-lead'
+// Leads go to the site's own API, which validates them and forwards them to n8n.
+const LEAD_ENDPOINTS = {
+  buyer: '/api/investor',
+  investor: '/api/investor',
+  seller: '/api/seller'
 };
+
+const SOURCE_KEY = 'keyvora_lead_source';
+
+// Remember where the visitor came from (UTM tags or referrer) for this browser session.
+function captureLeadSource() {
+  try {
+    if (sessionStorage.getItem(SOURCE_KEY)) return;
+    const params = new URLSearchParams(window.location.search);
+    const utm = ['utm_source', 'utm_medium', 'utm_campaign']
+      .map((k) => params.get(k))
+      .filter(Boolean)
+      .join(' / ');
+    let source = utm;
+    if (!source && document.referrer) {
+      const ref = new URL(document.referrer);
+      if (ref.hostname !== window.location.hostname) source = 'referrer: ' + ref.hostname;
+    }
+    sessionStorage.setItem(SOURCE_KEY, source || 'direct');
+  } catch (e) { /* storage unavailable */ }
+}
+
+function getLeadSource() {
+  try { return sessionStorage.getItem(SOURCE_KEY) || ''; } catch (e) { return ''; }
+}
+
+function newSubmissionId() {
+  if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
+  return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+}
 
 const FORM_MESSAGES = {
   en: {
@@ -24,6 +55,8 @@ function getFormMessages() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  captureLeadSource();
+
   // Mobile nav toggle
   const navToggle = document.querySelector('.nav-toggle');
   const nav = document.querySelector('.nav');
@@ -70,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const type = form.getAttribute('data-lead-form');
-      const url = WEBHOOK_URLS[type];
+      const url = LEAD_ENDPOINTS[type];
       const statusEl = form.querySelector('.form-status');
       const submitBtn = form.querySelector('button[type="submit"]');
       const messages = getFormMessages();
@@ -89,11 +122,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const payload = {
-        source: type,
-        submittedAt: new Date().toISOString(),
-        ...data
-      };
+      // One ID per submission attempt; a retry of the same attempt reuses it,
+      // so n8n can drop duplicates.
+      if (!form.dataset.submissionId) form.dataset.submissionId = newSubmissionId();
+
+      const payload = {};
+      Object.keys(data).forEach((key) => {
+        const value = typeof data[key] === 'string' ? data[key].trim() : data[key];
+        if (value !== '' && key !== 'website_url') payload[key] = value;
+      });
+      payload.submissionId = form.dataset.submissionId;
+      payload.language = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase() === 'es' ? 'es' : 'en';
+      payload.leadSource = getLeadSource();
 
       if (submitBtn) submitBtn.disabled = true;
       if (statusEl) {
@@ -115,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
           statusEl.className = 'form-status success';
         }
         form.reset();
+        delete form.dataset.submissionId;
       } catch (err) {
         if (statusEl) {
           statusEl.textContent = messages.error;
