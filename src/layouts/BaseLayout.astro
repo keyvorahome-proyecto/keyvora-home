@@ -10,9 +10,10 @@ interface Props {
   description: string;
   faqHref: string;
   stickyCta?: { href: string; label: string };
+  noindex?: boolean;
 }
 
-const { lang, route, title, description, faqHref, stickyCta } = Astro.props;
+const { lang, route, title, description, faqHref, stickyCta, noindex = false } = Astro.props;
 const site = 'https://keyvorahome.online';
 const canonical = site + routes[route][lang];
 const enUrl = site + routes[route].en;
@@ -25,6 +26,7 @@ const esUrl = site + routes[route].es;
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
 <meta name="description" content={description}>
+{noindex && <meta name="robots" content="noindex, follow">}
 <link rel="canonical" href={canonical}>
 <link rel="alternate" hreflang="en" href={enUrl}>
 <link rel="alternate" hreflang="es" href={esUrl}>

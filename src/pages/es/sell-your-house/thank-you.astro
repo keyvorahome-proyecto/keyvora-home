@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SellerThanks from '../../../components/SellerThanks.astro';
+import { sellerForm } from '../../../i18n/sellerForm';
+
+const t = sellerForm.es.thanks;
+---
+<BaseLayout lang="es" route="sellThanks" title={t.title} description={t.description} faqHref="/es/sell-your-house#faq" noindex>
+  <SellerThanks lang="es" />
+</BaseLayout>

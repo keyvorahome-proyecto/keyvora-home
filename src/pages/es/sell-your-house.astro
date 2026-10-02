@@ -1,4 +1,5 @@
 ---
+import SellerForm from '../../components/SellerForm.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 <BaseLayout
@@ -15,7 +16,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     </svg>
     <div class="container hero-inner">
       <div class="eyebrow">Vender mi Casa</div>
-      <h1>Vendé tu casa en Cleveland en tus tiempos — tal como está, sin reparaciones</h1>
+      <h1>¿Estás pensando en vender tu propiedad en Cleveland?</h1>
       <p class="lead">Sea cual sea el estado o la situación, Keyvora Home hace que vender de forma directa sea simple, en tus tiempos, sin las complicaciones habituales de publicar una casa en el mercado. Trabajamos con compradores que pagan en efectivo, y Keyvora no te cobra fees ni comisiones.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="#offer">Quiero que revisen mi propiedad</a>
@@ -77,27 +78,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         <div class="eyebrow">Empezá ahora</div>
         <h2>Contanos sobre tu propiedad</h2>
       </div>
-      <form class="form-wrap" data-lead-form="seller">
-        <div class="hp-field" aria-hidden="true">
-          <label for="website_url">Website</label>
-          <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
-        </div>
-        <div class="field full">
-          <label for="address">Dirección de la propiedad</label>
-          <input type="text" id="address" name="address" placeholder="123 Main St, Cleveland, OH" aria-label="Dirección de la propiedad" required>
-        </div>
-        <div class="field full">
-          <label for="contact">Teléfono o email</label>
-          <input type="text" id="contact" name="contact" placeholder="¿Cómo podemos contactarte?" aria-label="Teléfono o email" required>
-        </div>
-        <div class="field full">
-          <label for="reason">Motivo de venta (opcional)</label>
-          <input type="text" id="reason" name="reason" placeholder="ej. mudanza, propiedad heredada, evitar reparaciones" aria-label="Motivo de venta">
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">Quiero que revisen mi propiedad</button>
-        <p class="form-note">No hay ninguna obligación de aceptar la oferta. Simplemente nos vamos a contactar para conocer más sobre tu propiedad y tu situación.</p>
-        <div class="form-status" role="status" aria-live="polite"></div>
-      </form>
+      <SellerForm lang="es" />
       <p class="alt-contact">¿Preferís hablarlo? <a href="tel:+12166772783">Llamanos</a> o <a href="sms:+12166772783">escribinos</a> al (216) 677-2783.</p>
     </div>
   </section>

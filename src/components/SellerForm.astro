@@ -1,0 +1,113 @@
+---
+// Seller multi-step form (spec 28–40). Works with public/js/main.js
+// (initSellerForm). Without JavaScript all steps are shown at once and the
+// form is still usable up to the submit button.
+import { sellerForm } from '../i18n/sellerForm';
+import { routes, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = sellerForm[lang];
+const s = t.steps;
+const total = 6;
+
+const choiceSteps = [
+  { n: 2, name: 'propertyType', type: 'radio', ...s.propertyType },
+  { n: 3, name: 'condition', type: 'radio', ...s.condition },
+  { n: 4, name: 'situation', type: 'checkbox', ...s.situation },
+  { n: 5, name: 'timeline', type: 'radio', ...s.timeline }
+] as const;
+---
+<form
+  class="form-wrap msf"
+  data-lead-form="seller"
+  data-multistep
+  data-state="idle"
+  data-thanks={routes.sellThanks[lang]}
+  data-progress={t.progress}
+  data-errors={JSON.stringify(t.errors)}
+  data-submitting={t.submitting}
+  novalidate
+>
+  <div class="hp-field" aria-hidden="true">
+    <label for="website_url">Website</label>
+    <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
+  </div>
+
+  <div class="msf-progress">
+    <p class="msf-count" aria-live="polite">{t.progress.replace('{n}', '1').replace('{total}', String(total))}</p>
+    <div class="msf-bar" aria-hidden="true"><span style={`width:${100 / total}%`}></span></div>
+    <ol class="msf-dots" aria-hidden="true">
+      {t.stepNames.map((name, i) => (
+        <li data-step-state={i === 0 ? 'active' : 'unvisited'}><span class="msf-dot">{i + 1}</span><span class="msf-dot-label">{name}</span></li>
+      ))}
+    </ol>
+  </div>
+
+  <fieldset class="msf-step" data-step="1" data-step-state="active">
+    <legend class="msf-title">{s.address.title}</legend>
+    <p class="msf-hint">{s.address.hint}</p>
+    <div class="field">
+      <label for="address">{s.address.label}</label>
+      <input type="text" id="address" name="address" placeholder={s.address.placeholder} autocomplete="street-address" maxlength="300" required aria-describedby="address-error">
+      <p class="field-error" id="address-error"></p>
+    </div>
+  </fieldset>
+
+  {choiceSteps.map((step) => (
+    <fieldset class="msf-step" data-step={step.n} data-step-state="unvisited" data-choice={step.type}>
+      <legend class="msf-title">{step.title}</legend>
+      {'hint' in step && <p class="msf-hint">{step.hint}</p>}
+      <div class={`choice-grid${step.options.length > 6 ? ' choice-grid-wide' : ''}`}>
+        {step.options.map((opt, i) => (
+          <label class="choice">
+            <input type={step.type} name={step.name} value={opt.value} id={`${step.name}-${i}`}>
+            <span class="choice-box">{opt.label}</span>
+          </label>
+        ))}
+      </div>
+      <p class="field-error" id={`${step.name}-error`}></p>
+    </fieldset>
+  ))}
+
+  <fieldset class="msf-step" data-step="6" data-step-state="unvisited">
+    <legend class="msf-title">{s.contact.title}</legend>
+    <p class="msf-hint">{s.contact.hint}</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="firstName">{s.contact.firstName}</label>
+        <input type="text" id="firstName" name="firstName" autocomplete="given-name" maxlength="80" required aria-describedby="firstName-error">
+        <p class="field-error" id="firstName-error"></p>
+      </div>
+      <div class="field">
+        <label for="lastName">{s.contact.lastName} <span class="opt">{t.optional}</span></label>
+        <input type="text" id="lastName" name="lastName" autocomplete="family-name" maxlength="80">
+      </div>
+      <div class="field">
+        <label for="phone">{s.contact.phone}</label>
+        <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" maxlength="40" aria-describedby="phone-error">
+        <p class="field-error" id="phone-error"></p>
+      </div>
+      <div class="field">
+        <label for="email">{s.contact.email}</label>
+        <input type="email" id="email" name="email" autocomplete="email" maxlength="254" aria-describedby="email-error">
+        <p class="field-error" id="email-error"></p>
+      </div>
+    </div>
+    <p class="msf-consent">{t.consent}</p>
+  </fieldset>
+
+  <div class="msf-general-error" role="alert" hidden>
+    <p>{t.errors.general}</p>
+    <button type="submit" class="btn btn-secondary">{t.tryAgain}</button>
+  </div>
+
+  <div class="msf-nav">
+    <button type="button" class="btn btn-ghost" data-msf-back hidden>{t.back}</button>
+    <button type="button" class="btn btn-primary" data-msf-next>{t.next}</button>
+    <button type="submit" class="btn btn-primary" data-msf-submit>{t.submit}</button>
+  </div>
+</form>
