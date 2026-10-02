@@ -34,6 +34,7 @@ export const home = {
       h2: 'Every property has a story.',
       intro: "Whatever brought you here, we start by listening. Tell us what's going on with your property.",
       cta: 'Start property review →',
+      pick: 'Start here →',
       items: [
         { icon: '🔧', title: 'Needs repairs', text: "Small fixes or major work. Tell us what it needs and we'll talk it through." },
         { icon: '📜', title: 'Inherited property', text: "Handling a property you inherited can be a lot. We'll walk through your options with you." },
@@ -87,7 +88,15 @@ export const home = {
       placeholder: 'Street address, city, ZIP',
       cta: 'Start property review →'
     },
-    sticky: 'Start property review'
+    sticky: 'Start property review',
+    images: {
+      hero: 'Downtown Cleveland skyline and the Cuyahoga River on a clear day',
+      sign: 'The Cleveland script sign by the lakefront, with downtown buildings behind it',
+      dusk: 'Downtown Cleveland skyline over the river at dusk',
+      sellerCard: 'A two-story family home with a covered front porch and a green lawn',
+      investorCard: 'A wood-sided house with a wide front porch and a magnolia tree in bloom',
+      story: 'Evening light on the front porch of an older wood house'
+    }
   },
   es: {
     title: 'Keyvora Home | Tu propiedad en Cleveland. Tus opciones.',
@@ -120,6 +129,7 @@ export const home = {
       h2: 'Cada propiedad tiene una historia.',
       intro: 'Sea lo que sea que te trajo hasta acá, empezamos por escucharte. Contanos qué pasa con tu propiedad.',
       cta: 'Revisar mi propiedad →',
+      pick: 'Empezar por acá →',
       items: [
         { icon: '🔧', title: 'Necesita reparaciones', text: 'Arreglos chicos o trabajos grandes. Contanos qué necesita y lo conversamos.' },
         { icon: '📜', title: 'Propiedad heredada', text: 'Ocuparse de una propiedad heredada puede ser mucho. Vemos tus opciones juntos.' },
@@ -173,6 +183,14 @@ export const home = {
       placeholder: 'Calle y número, ciudad, ZIP',
       cta: 'Revisar mi propiedad →'
     },
-    sticky: 'Revisar mi propiedad'
+    sticky: 'Revisar mi propiedad',
+    images: {
+      hero: 'El centro de Cleveland y el río Cuyahoga en un día despejado',
+      sign: 'El cartel de Cleveland junto al lago, con edificios del centro detrás',
+      dusk: 'El centro de Cleveland sobre el río al atardecer',
+      sellerCard: 'Una casa familiar de dos plantas con porche techado y césped',
+      investorCard: 'Una casa de madera con porche amplio y un magnolio en flor',
+      story: 'Luz de la tarde sobre el porche de una casa antigua de madera'
+    }
   }
 } satisfies Record<Lang, unknown>;
