@@ -4,8 +4,9 @@ import InvestorPage from '../components/InvestorPage.astro';
 import { investors } from '../i18n/investors';
 
 const t = investors.en;
+import { breadcrumbSchema, faqSchema } from '../lib/schema';
 ---
-<BaseLayout
+<BaseLayout jsonLd={[faqSchema(t.faq.items), breadcrumbSchema('en', 'investors')]}
   lang="en"
   route="investors"
   title={t.title}

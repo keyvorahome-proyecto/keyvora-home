@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PrivacyPage from '../components/PrivacyPage.astro';
+import { privacy } from '../i18n/privacy';
+
+const t = privacy.en;
+import { breadcrumbSchema } from '../lib/schema';
+---
+<BaseLayout jsonLd={[breadcrumbSchema('en', 'privacy')]} lang="en" route="privacy" title={t.title} description={t.description} faqHref="/sell-your-house#faq">
+  <PrivacyPage lang="en" />
+</BaseLayout>

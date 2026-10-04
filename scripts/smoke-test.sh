@@ -116,4 +116,28 @@ check_contains / 'window.gtag = function'
 check_contains /investors 'window.gtag = function'
 check_contains / 'G-MBH8MRM2ES'
 
+# Privacy and structured data (spec 88)
+for p in /privacy /es/privacy; do check_status "$p" 200; done
+check_contains /privacy 'Privacy Policy'
+check_contains /privacy 'reply STOP'
+check_contains /es/privacy 'Política de Privacidad'
+check_contains / 'href="/privacy"'
+check_contains /es/ 'href="/es/privacy"'
+check_contains /sell-your-house 'See our Privacy Policy.'
+check_contains /investors 'See our Privacy Policy.'
+check_contains / '"@type":"Organization"'
+check_contains / '"@type":"WebSite"'
+check_contains /sell-your-house '"@type":"FAQPage"'
+check_contains /investors '"@type":"FAQPage"'
+check_contains /es/sell-your-house '"@type":"BreadcrumbList"'
+check_contains /sitemap-0.xml 'https://keyvorahome.online/privacy'
+for p in / /es/ /sell-your-house /es/sell-your-house /investors /es/investors /privacy /es/privacy; do
+  if ! curl -s "$BASE$p" | node -e '
+    let html = ""; process.stdin.on("data", (c) => (html += c)).on("end", () => {
+      const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+      blocks.forEach((m) => JSON.parse(m[1]));
+      process.exit(blocks.length ? 0 : 1);
+    });'; then echo "::error::FAIL $p has missing or invalid JSON-LD"; fail=1; else echo "ok   $p JSON-LD valid"; fi
+done
+
 exit $fail

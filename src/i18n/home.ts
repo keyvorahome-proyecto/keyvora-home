@@ -6,7 +6,7 @@ export const home = {
   en: {
     title: 'Keyvora Home | Your Cleveland Property. Your Options.',
     description:
-      "Selling a property or looking for investment opportunities in Cleveland, Ohio? Keyvora Home helps homeowners and investors take the next step, with local focus and no pressure.",
+      "Selling a property or investing in Cleveland, Ohio? Keyvora Home helps homeowners and investors take the next step, with local focus and no pressure.",
     hero: {
       eyebrow: 'Cleveland, Ohio',
       h1: 'Your Cleveland property. Your options.',
@@ -101,7 +101,7 @@ export const home = {
   es: {
     title: 'Keyvora Home | Tu propiedad en Cleveland. Tus opciones.',
     description:
-      '¿Querés vender una propiedad o buscás oportunidades de inversión en Cleveland, Ohio? Keyvora Home ayuda a propietarios e inversionistas a dar el siguiente paso, con enfoque local y sin presión.',
+      '¿Querés vender una propiedad o invertir en Cleveland, Ohio? Keyvora Home ayuda a propietarios e inversionistas a dar el siguiente paso, sin presión.',
     hero: {
       eyebrow: 'Cleveland, Ohio',
       h1: 'Tu propiedad en Cleveland. Tus opciones.',

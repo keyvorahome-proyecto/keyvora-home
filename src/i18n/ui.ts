@@ -5,7 +5,8 @@ export const routes = {
   sell: { en: '/sell-your-house', es: '/es/sell-your-house' },
   investors: { en: '/investors', es: '/es/investors' },
   sellThanks: { en: '/sell-your-house/thank-you', es: '/es/sell-your-house/thank-you' },
-  investorThanks: { en: '/investors/thank-you', es: '/es/investors/thank-you' }
+  investorThanks: { en: '/investors/thank-you', es: '/es/investors/thank-you' },
+  privacy: { en: '/privacy', es: '/es/privacy' }
 } as const;
 
 export type RouteKey = keyof typeof routes;

@@ -4,6 +4,7 @@
 // form is still usable up to the submit button.
 import { sellerForm } from '../i18n/sellerForm';
 import { routes, type Lang } from '../i18n/ui';
+import { privacyLink } from '../i18n/privacy';
 
 interface Props {
   lang: Lang;
@@ -97,7 +98,7 @@ const choiceSteps = [
         <p class="field-error" id="email-error"></p>
       </div>
     </div>
-    <p class="msf-consent">{t.consent}</p>
+    <p class="msf-consent">{t.consent} <a href={routes.privacy[lang]} target="_blank" rel="noopener">{privacyLink[lang].consent}</a></p>
   </fieldset>
 
   <div class="msf-general-error" role="alert" hidden>
