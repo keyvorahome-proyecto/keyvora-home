@@ -1,14 +1,23 @@
 ---
-// Seller thank-you page body (spec 41–42).
-import { sellerForm } from '../i18n/sellerForm';
+// Thank-you page body shared by the seller (spec 41–42) and investor
+// (spec 54) funnels.
 import { routes, type Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
+  copy: {
+    eyebrow: string;
+    h1: string;
+    lead: string;
+    steps: readonly string[];
+    call: string;
+    home: string;
+    how: string;
+  };
+  howHref?: string;
 }
 
-const { lang } = Astro.props;
-const t = sellerForm[lang].thanks;
+const { lang, copy: t, howHref = routes.home[lang] + '#how-it-works' } = Astro.props;
 ---
 <section class="hero thanks-hero">
   <div class="container hero-inner thanks-inner">
@@ -27,6 +36,6 @@ const t = sellerForm[lang].thanks;
       <a class="btn btn-primary" href="tel:+12166772783">{t.call}</a>
       <a class="btn btn-secondary" href={routes.home[lang]}>{t.home}</a>
     </div>
-    <p class="thanks-more"><a href={routes.home[lang] + '#how-it-works'}>{t.how}</a></p>
+    <p class="thanks-more"><a href={howHref}>{t.how}</a></p>
   </div>
 </section>
