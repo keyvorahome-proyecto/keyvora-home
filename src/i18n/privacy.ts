@@ -57,7 +57,9 @@ export const privacy = {
         p: ['We do not sell your personal information. We share it only as needed to run our business:'],
         list: [
           'With service providers that store or process it for us, such as our website host, our database (Airtable), our automation tools, Google (email and Analytics) and Telegram (internal notifications to our team). They may use it only to provide their services to us.',
-          'If you decide to move forward with a transaction, with the parties needed to complete it, such as a title company, an attorney or, for property owners, an investor buyer. We will tell you before sharing your contact details with a buyer.',
+          'Property details: if you sign a purchase agreement with us, we may share the property details (address, photos, condition, price and estimated repairs) with investors in our network. We do not share your name or contact information to market the property.',
+          'Assignment of the agreement: our purchase agreements may be assigned to another buyer, and this is stated in the agreement you sign. If we assign it, the buyer receives a copy of the agreement and, together with the title company and the attorney, the contact information needed to coordinate visits, inspections and closing.',
+          'Investors: if you are an investor, your information is shared only with the parties involved in closing a transaction you decide to buy.',
           'When required by law or to protect our rights, or as part of a sale or reorganization of our business.'
         ]
       },
@@ -147,7 +149,9 @@ export const privacy = {
         p: ['No vendemos tu información personal. Solo la compartimos cuando hace falta para operar:'],
         list: [
           'Con proveedores que la guardan o procesan por nosotros, como el hosting del sitio, nuestra base de datos (Airtable), nuestras herramientas de automatización, Google (email y Analytics) y Telegram (avisos internos a nuestro equipo). Solo pueden usarla para darnos su servicio.',
-          'Si decidís avanzar con una operación, con quienes hacen falta para concretarla, como una title company, un abogado o, si sos propietario, un inversionista comprador. Te avisamos antes de compartir tus datos de contacto con un comprador.',
+          'Detalles de la propiedad: si firmás un contrato de compra con nosotros, podemos compartir los detalles de la propiedad (dirección, fotos, estado, precio y reparaciones estimadas) con inversionistas de nuestra red. No compartimos tu nombre ni tus datos de contacto para promocionarla.',
+          'Cesión del contrato: nuestros contratos de compra pueden cederse a otro comprador, y eso está indicado en el contrato que firmás. Si lo cedemos, el comprador recibe una copia del contrato y, junto con la title company y el abogado, la información de contacto necesaria para coordinar visitas, inspecciones y el cierre.',
+          'Inversionistas: si sos inversionista, tus datos se comparten solo con quienes intervienen en el cierre de una operación que decidas comprar.',
           'Cuando lo exija la ley o para proteger nuestros derechos, o como parte de una venta o reorganización de nuestro negocio.'
         ]
       },
