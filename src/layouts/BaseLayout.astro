@@ -3,6 +3,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { routes, ui, type Lang, type RouteKey } from '../i18n/ui';
 import { GA_MEASUREMENT_ID, ANALYTICS_HOSTS } from '../lib/analytics';
+import { ldJson } from '../lib/schema';
 
 interface Props {
   lang: Lang;
@@ -12,9 +13,10 @@ interface Props {
   faqHref: string;
   stickyCta?: { href: string; label: string };
   noindex?: boolean;
+  jsonLd?: object[];
 }
 
-const { lang, route, title, description, faqHref, stickyCta, noindex = false } = Astro.props;
+const { lang, route, title, description, faqHref, stickyCta, noindex = false, jsonLd = [] } = Astro.props;
 const site = 'https://keyvorahome.online';
 const canonical = site + routes[route][lang];
 const enUrl = site + routes[route].en;
@@ -33,6 +35,7 @@ const esUrl = site + routes[route].es;
 <link rel="alternate" hreflang="es" href={esUrl}>
 <link rel="alternate" hreflang="x-default" href={enUrl}>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+{jsonLd.map((data) => <script type="application/ld+json" set:html={ldJson(data)} />)}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap">

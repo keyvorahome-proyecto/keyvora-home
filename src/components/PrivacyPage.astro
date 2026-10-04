@@ -1,0 +1,31 @@
+---
+// Privacy policy page body (spec 88), EN and ES.
+import { privacy, EFFECTIVE_DATE } from '../i18n/privacy';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = privacy[lang];
+---
+<section class="section legal">
+  <div class="container legal-inner">
+    <div class="eyebrow">{t.eyebrow}</div>
+    <h1>{t.h1}</h1>
+    <p class="legal-date">{t.effective} {EFFECTIVE_DATE[lang]}</p>
+    <p class="lead">{t.intro}</p>
+    {t.sections.map((section) => (
+      <section class="legal-section">
+        <h2>{section.h}</h2>
+        {section.p && section.p.map((para) => <p>{para}</p>)}
+        {section.list && (
+          <ul>
+            {section.list.map((item) => <li>{item}</li>)}
+          </ul>
+        )}
+      </section>
+    ))}
+  </div>
+</section>

@@ -5,8 +5,9 @@ import { home } from '../../i18n/home';
 import { routes } from '../../i18n/ui';
 
 const t = home.es;
+import { organizationSchema, websiteSchema } from '../../lib/schema';
 ---
-<BaseLayout
+<BaseLayout jsonLd={[organizationSchema(), websiteSchema('es')]}
   lang="es"
   route="home"
   title={t.title}

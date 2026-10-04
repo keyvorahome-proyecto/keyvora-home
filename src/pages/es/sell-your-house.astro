@@ -1,6 +1,29 @@
 ---
 import SellerForm from '../../components/SellerForm.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { faqSchema, breadcrumbSchema } from '../../lib/schema';
+const faq = [
+  {
+    "q": "¿Mi casa tiene que estar en buen estado?",
+    "a": "No. Consideramos propiedades en cualquier condición, incluidas aquellas que necesitan reparaciones importantes."
+  },
+  {
+    "q": "¿Cuánto tiempo lleva el proceso?",
+    "a": "Los tiempos dependen de cada propiedad y situación. Una vez que nos contactemos, te vamos a explicar qué esperar en tu caso particular."
+  },
+  {
+    "q": "¿Estoy obligado a aceptar una oferta?",
+    "a": "Para nada. Enviar tus datos solo da inicio a una conversación — nunca estás obligado a aceptar ninguna oferta que te presentemos."
+  },
+  {
+    "q": "¿En qué zonas trabajan?",
+    "a": "Trabajamos con propietarios en Cleveland y en todo el condado de Cuyahoga, Ohio."
+  },
+  {
+    "q": "¿Cobran algún fee o comisión?",
+    "a": "No. Keyvora Home no te cobra ningún fee ni comisión. Los costos de cierre habituales, como los de título y escrow, se manejan a través de la title company y te los explicamos antes de que firmes nada."
+  }
+];
 ---
 <BaseLayout
   lang="es"
@@ -8,6 +31,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   title={'Vendé tu Casa en Cleveland, Ohio, en tus Tiempos | Keyvora Home'}
   description={'Vendé tu casa en Cleveland, Ohio tal como está y en tus tiempos: sin reparaciones, sin visitas y sin fees ni comisiones cobrados por Keyvora. Trabajamos con compradores que pagan en efectivo. Sin compromiso.'}
   faqHref="#faq"
+  jsonLd={[faqSchema(faq), breadcrumbSchema('es', 'sell')]}
   stickyCta={{ href: '#offer', label: 'Revisar mi propiedad' }}
 >
   <section class="hero">
@@ -90,51 +114,17 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         <h2>Dudas comunes</h2>
       </div>
       <div class="faq-list">
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1">
-            ¿Mi casa tiene que estar en buen estado?
-            <span class="faq-icon">+</span>
-          </button>
-          <div class="faq-answer" id="faq-answer-1" role="region">
-            <p>No. Consideramos propiedades en cualquier condición, incluidas aquellas que necesitan reparaciones importantes.</p>
+        {faq.map((item, i) => (
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls={`faq-answer-${i + 1}`}>
+              {item.q}
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer" id={`faq-answer-${i + 1}`} role="region">
+              <p>{item.a}</p>
+            </div>
           </div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2">
-            ¿Cuánto tiempo lleva el proceso?
-            <span class="faq-icon">+</span>
-          </button>
-          <div class="faq-answer" id="faq-answer-2" role="region">
-            <p>Los tiempos dependen de cada propiedad y situación. Una vez que nos contactemos, te vamos a explicar qué esperar en tu caso particular.</p>
-          </div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3">
-            ¿Estoy obligado a aceptar una oferta?
-            <span class="faq-icon">+</span>
-          </button>
-          <div class="faq-answer" id="faq-answer-3" role="region">
-            <p>Para nada. Enviar tus datos solo da inicio a una conversación — nunca estás obligado a aceptar ninguna oferta que te presentemos.</p>
-          </div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4">
-            ¿En qué zonas trabajan?
-            <span class="faq-icon">+</span>
-          </button>
-          <div class="faq-answer" id="faq-answer-4" role="region">
-            <p>Trabajamos con propietarios en Cleveland y en todo el condado de Cuyahoga, Ohio.</p>
-          </div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5">
-            ¿Cobran algún fee o comisión?
-            <span class="faq-icon">+</span>
-          </button>
-          <div class="faq-answer" id="faq-answer-5" role="region">
-            <p>No. Keyvora Home no te cobra ningún fee ni comisión. Los costos de cierre habituales, como los de título y escrow, se manejan a través de la title company y te los explicamos antes de que firmes nada.</p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   </section>

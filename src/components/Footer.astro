@@ -1,5 +1,6 @@
 ---
-import { ui, type Lang } from '../i18n/ui';
+import { routes, ui, type Lang } from '../i18n/ui';
+import { privacyLink } from '../i18n/privacy';
 
 interface Props {
   lang: Lang;
@@ -22,6 +23,7 @@ const t = ui[lang];
     <div class="footer-social">
       <a href="https://www.facebook.com/share/1DsGpWwTpB/?mibextid=LQQJ4d" target="_blank" rel="noopener noreferrer">Facebook</a>
     </div>
+    <p class="footer-legal"><a href={routes.privacy[lang]}>{privacyLink[lang].footer}</a></p>
     <div class="jv-block">
       {t.jvText} <a href="mailto:keyvorahome@gmail.com?subject=JV%20Inquiry">{t.jvLink}</a>
     </div>

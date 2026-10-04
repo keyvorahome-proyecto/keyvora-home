@@ -4,6 +4,7 @@
 // shown at once.
 import { investors, AREAS, RANGE } from '../i18n/investors';
 import { routes, type Lang } from '../i18n/ui';
+import { privacyLink } from '../i18n/privacy';
 
 interface Props {
   lang: Lang;
@@ -149,7 +150,7 @@ const after = [choice(5, 'preferredCondition', t.preferredCondition), choice(6, 
         <p class="field-error" id="phone-error"></p>
       </div>
     </div>
-    <p class="msf-consent">{t.consent}</p>
+    <p class="msf-consent">{t.consent} <a href={routes.privacy[lang]} target="_blank" rel="noopener">{privacyLink[lang].consent}</a></p>
   </fieldset>
 
   <div class="msf-general-error" role="alert" hidden>
