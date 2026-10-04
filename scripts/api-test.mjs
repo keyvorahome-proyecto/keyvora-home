@@ -69,6 +69,9 @@ let last = received[received.length - 1];
 check('seller forwarded to seller webhook with secret', last && last.url.endsWith('/seller') && last.secret === SECRET, JSON.stringify(last));
 check('seller payload has server timestamp and submission ID', last && last.body.submittedAt && last.body.submissionId === 'abcdef12-3456' && !('website_url' in last.body), JSON.stringify(last?.body));
 
+r = await post('/api/seller', { address: '1 Elm St', phone: '(216) 555-1234', timeline: 'Within 30 days' });
+check('structured seller without first name -> 400', r.status === 400 && r.json.fields?.firstName, JSON.stringify(r.json));
+
 // Valid new-format seller
 r = await post('/api/seller', { address: '1 Elm St', zip: '44105', firstName: 'Ann', phone: '(216) 555-1234', propertyType: 'Duplex', condition: 'Major renovation', situation: ['Inherited property', 'Vacant property'], timeline: 'Within 30 days', landingPage: '/' });
 check('valid structured seller -> 200', r.status === 200, JSON.stringify(r.json));

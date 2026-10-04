@@ -1,4 +1,5 @@
 ---
+import SellerForm from '../components/SellerForm.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout
@@ -15,7 +16,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </svg>
     <div class="container hero-inner">
       <div class="eyebrow">Sell Your House</div>
-      <h1>Sell your Cleveland house on your timeline — as-is, no repairs</h1>
+      <h1>Thinking about selling your Cleveland property?</h1>
       <p class="lead">Whatever the condition or situation, Keyvora Home makes it simple to sell directly, on your timeline, without the usual hassle of listing a home. We work with cash buyers, and Keyvora charges you no fees or commissions.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="#offer">Start my property review</a>
@@ -77,27 +78,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="eyebrow">Get started</div>
         <h2>Tell us about your property</h2>
       </div>
-      <form class="form-wrap" data-lead-form="seller">
-        <div class="hp-field" aria-hidden="true">
-          <label for="website_url">Website</label>
-          <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
-        </div>
-        <div class="field full">
-          <label for="address">Property address</label>
-          <input type="text" id="address" name="address" placeholder="123 Main St, Cleveland, OH" aria-label="Property address" required>
-        </div>
-        <div class="field full">
-          <label for="contact">Phone or email</label>
-          <input type="text" id="contact" name="contact" placeholder="How can we reach you?" aria-label="Phone or email" required>
-        </div>
-        <div class="field full">
-          <label for="reason">Reason for selling (optional)</label>
-          <input type="text" id="reason" name="reason" placeholder="e.g. relocating, inherited property, avoiding repairs" aria-label="Reason for selling">
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">Start my property review</button>
-        <p class="form-note">There's no obligation to accept any offer. We'll simply reach out to learn more about your property and situation.</p>
-        <div class="form-status" role="status" aria-live="polite"></div>
-      </form>
+      <SellerForm lang="en" />
       <p class="alt-contact">Prefer to talk it through? <a href="tel:+12166772783">Call</a> or <a href="sms:+12166772783">text</a> us at (216) 677-2783.</p>
     </div>
   </section>

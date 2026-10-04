@@ -1,0 +1,32 @@
+---
+// Seller thank-you page body (spec 41–42).
+import { sellerForm } from '../i18n/sellerForm';
+import { routes, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = sellerForm[lang].thanks;
+---
+<section class="hero thanks-hero">
+  <div class="container hero-inner thanks-inner">
+    <div class="thanks-check" aria-hidden="true">
+      <svg viewBox="0 0 48 48" width="48" height="48"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 25 L21 32 L34 17" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="eyebrow">{t.eyebrow}</div>
+    <h1>{t.h1}</h1>
+    <p class="lead">{t.lead}</p>
+    <ol class="thanks-steps">
+      {t.steps.map((step, i) => (
+        <li><span class="step-number" aria-hidden="true">{i + 1}</span><span>{step}</span></li>
+      ))}
+    </ol>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="tel:+12166772783">{t.call}</a>
+      <a class="btn btn-secondary" href={routes.home[lang]}>{t.home}</a>
+    </div>
+    <p class="thanks-more"><a href={routes.home[lang] + '#how-it-works'}>{t.how}</a></p>
+  </div>
+</section>

@@ -78,7 +78,7 @@ const investUrl = routes.investors[lang];
       <ul class="situation-grid">
         {t.situations.items.map((item) => (
           <li data-reveal>
-            <a class="situation-card" href={sellUrl + '#offer'} data-situation={item.title}>
+            <a class="situation-card" href={sellUrl + '#offer'} data-situation={'situation' in item ? item.situation : undefined} data-timeline={'timeline' in item ? item.timeline : undefined}>
               <span class="icon" aria-hidden="true">{item.icon}</span>
               <h3>{item.title}</h3>
               <p>{item.text}</p>

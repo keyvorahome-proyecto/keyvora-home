@@ -11,6 +11,7 @@ export default defineConfig({
   build: { format: 'directory' },
   integrations: [
     sitemap({
+      filter: (page) => !page.includes('/thank-you'),
       i18n: { defaultLocale: 'en', locales: { en: 'en-US', es: 'es' } }
     })
   ]

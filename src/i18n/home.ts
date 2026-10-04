@@ -36,12 +36,12 @@ export const home = {
       cta: 'Start property review →',
       pick: 'Start here →',
       items: [
-        { icon: '🔧', title: 'Needs repairs', text: "Small fixes or major work. Tell us what it needs and we'll talk it through." },
-        { icon: '📜', title: 'Inherited property', text: "Handling a property you inherited can be a lot. We'll walk through your options with you." },
-        { icon: '🚪', title: 'Vacant property', text: "An empty house still takes money and attention. Let's discuss what makes sense." },
-        { icon: '🔑', title: 'Rental property', text: 'Tenants, turnover or simply ready to move on. We work with rental owners too.' },
-        { icon: '⏱️', title: 'Need to sell soon', text: "If timing matters, share your timeline and we'll be clear about what's possible." },
-        { icon: '🧭', title: 'Just exploring', text: 'No commitment needed. Learn your options before deciding anything.' }
+        { icon: '🔧', situation: 'Property needs too many repairs', title: 'Needs repairs', text: "Small fixes or major work. Tell us what it needs and we'll talk it through." },
+        { icon: '📜', situation: 'Inherited property', title: 'Inherited property', text: "Handling a property you inherited can be a lot. We'll walk through your options with you." },
+        { icon: '🚪', situation: 'Vacant property', title: 'Vacant property', text: "An empty house still takes money and attention. Let's discuss what makes sense." },
+        { icon: '🔑', situation: 'Rental property', title: 'Rental property', text: 'Tenants, turnover or simply ready to move on. We work with rental owners too.' },
+        { icon: '⏱️', timeline: 'As soon as possible', title: 'Need to sell soon', text: "If timing matters, share your timeline and we'll be clear about what's possible." },
+        { icon: '🧭', timeline: 'Just exploring', title: 'Just exploring', text: 'No commitment needed. Learn your options before deciding anything.' }
       ]
     },
     why: {
@@ -131,12 +131,12 @@ export const home = {
       cta: 'Revisar mi propiedad →',
       pick: 'Empezar por acá →',
       items: [
-        { icon: '🔧', title: 'Necesita reparaciones', text: 'Arreglos chicos o trabajos grandes. Contanos qué necesita y lo conversamos.' },
-        { icon: '📜', title: 'Propiedad heredada', text: 'Ocuparse de una propiedad heredada puede ser mucho. Vemos tus opciones juntos.' },
-        { icon: '🚪', title: 'Propiedad vacía', text: 'Una casa vacía igual requiere dinero y atención. Hablemos de qué conviene.' },
-        { icon: '🔑', title: 'Propiedad en alquiler', text: 'Inquilinos, rotación o simplemente ganas de cerrar esa etapa. También trabajamos con propietarios que alquilan.' },
-        { icon: '⏱️', title: 'Necesito vender pronto', text: 'Si los tiempos importan, contanos tu plazo y te decimos con claridad qué es posible.' },
-        { icon: '🧭', title: 'Solo estoy explorando', text: 'Sin compromiso. Conocé tus opciones antes de decidir nada.' }
+        { icon: '🔧', situation: 'Property needs too many repairs', title: 'Necesita reparaciones', text: 'Arreglos chicos o trabajos grandes. Contanos qué necesita y lo conversamos.' },
+        { icon: '📜', situation: 'Inherited property', title: 'Propiedad heredada', text: 'Ocuparse de una propiedad heredada puede ser mucho. Vemos tus opciones juntos.' },
+        { icon: '🚪', situation: 'Vacant property', title: 'Propiedad vacía', text: 'Una casa vacía igual requiere dinero y atención. Hablemos de qué conviene.' },
+        { icon: '🔑', situation: 'Rental property', title: 'Propiedad en alquiler', text: 'Inquilinos, rotación o simplemente ganas de cerrar esa etapa. También trabajamos con propietarios que alquilan.' },
+        { icon: '⏱️', timeline: 'As soon as possible', title: 'Necesito vender pronto', text: 'Si los tiempos importan, contanos tu plazo y te decimos con claridad qué es posible.' },
+        { icon: '🧭', timeline: 'Just exploring', title: 'Solo estoy explorando', text: 'Sin compromiso. Conocé tus opciones antes de decidir nada.' }
       ]
     },
     why: {

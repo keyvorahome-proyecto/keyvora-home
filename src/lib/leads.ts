@@ -112,6 +112,12 @@ export const sellerSchema = z
   .refine((d) => Boolean(d.phone || d.email || d.contact), {
     message: 'contact_required',
     path: ['contact']
+  })
+  // Spec 34: first name is required. The legacy single-field form (still
+  // possibly cached in some browsers) only sent "contact", so it is exempt.
+  .refine((d) => Boolean(d.firstName || d.contact), {
+    message: 'required',
+    path: ['firstName']
   });
 
 export const investorSchema = z

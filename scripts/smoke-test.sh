@@ -69,8 +69,28 @@ check_contains /investors 'Join investor network'
 check_contains / 'cleveland-skyline-day-1280.webp'
 check_contains /es/ 'El centro de Cleveland y el río Cuyahoga'
 check_contains / 'house-porch-evening-853.webp'
-check_contains / 'data-situation='
+check_contains / 'data-situation="Inherited property"'
+check_contains / 'data-timeline="Just exploring"'
 for p in /images/house-midwest-640.webp /images/house-porch-spring-1280.jpg /images/house-porch-evening-560.webp; do check_status "$p" 200; done
 for p in /images/cleveland-skyline-day-800.webp /images/cleveland-sign-1280.jpg /images/cleveland-skyline-dusk-1280.webp; do check_status "$p" 200; done
+
+# Seller multi-step form (spec 28-42)
+check_contains /sell-your-house 'Thinking about selling your Cleveland property?'
+check_contains /es/sell-your-house '¿Estás pensando en vender tu propiedad en Cleveland?'
+check_contains /sell-your-house 'data-multistep'
+check_contains /sell-your-house 'SUBMIT MY PROPERTY →'
+check_contains /sell-your-house 'Consent is not required as a condition of any purchase.'
+check_contains /sell-your-house 'value="Needs significant repairs"'
+check_contains /sell-your-house 'value="1–3 months"'
+check_contains /es/sell-your-house 'Propiedad heredada'
+check_contains /es/sell-your-house 'value="Inherited property"'
+check_contains /sell-your-house 'data-thanks="/sell-your-house/thank-you"'
+for p in /sell-your-house/thank-you /es/sell-your-house/thank-you; do check_status "$p" 200; done
+check_contains /sell-your-house/thank-you 'Thanks — we received your property information.'
+check_contains /sell-your-house/thank-you 'CALL KEYVORA'
+check_contains /sell-your-house/thank-you 'RETURN HOME'
+check_contains /sell-your-house/thank-you 'noindex'
+check_contains /es/sell-your-house/thank-you 'Gracias — recibimos los datos de tu propiedad.'
+if curl -s "$BASE/sitemap-0.xml" | grep -q 'thank-you'; then echo "::error::FAIL sitemap includes thank-you pages"; fail=1; fi
 
 exit $fail

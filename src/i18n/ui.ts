@@ -3,7 +3,8 @@ export type Lang = 'en' | 'es';
 export const routes = {
   home: { en: '/', es: '/es/' },
   sell: { en: '/sell-your-house', es: '/es/sell-your-house' },
-  investors: { en: '/investors', es: '/es/investors' }
+  investors: { en: '/investors', es: '/es/investors' },
+  sellThanks: { en: '/sell-your-house/thank-you', es: '/es/sell-your-house/thank-you' }
 } as const;
 
 export type RouteKey = keyof typeof routes;

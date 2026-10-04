@@ -823,3 +823,124 @@ a.situation-card:hover .card-link { text-decoration: underline; }
 .path-card.has-photo .card-body { display: flex; flex-direction: column; flex: 1; }
 .path-card.has-photo .card-body .btn { margin-top: auto; align-self: flex-start; }
 @media (max-width: 720px) { .path-card.has-photo .card-body .btn { align-self: stretch; text-align: center; } }
+
+/* ===== Seller multi-step form (Phase 4) ===== */
+.msf { max-width: 720px; }
+.msf fieldset { border: 0; padding: 0; margin: 0 0 8px; min-width: 0; }
+.msf-title {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--color-text);
+  padding: 0;
+  margin-bottom: 6px;
+}
+.msf-hint { font-size: 0.92rem; margin-bottom: 18px; }
+.msf .opt { font-weight: 400; color: var(--color-text-muted); }
+
+/* Progress */
+.msf-progress { display: none; margin-bottom: 28px; }
+.msf.is-enhanced .msf-progress { display: block; }
+.msf-count { font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-cta); font-weight: 500; margin-bottom: 8px; }
+.msf-bar { height: 6px; background: var(--color-border); border-radius: 999px; overflow: hidden; }
+.msf-bar span { display: block; height: 100%; background: var(--color-cta); border-radius: 999px; transition: width 0.35s ease; }
+.msf-dots { list-style: none; display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 0; margin: 12px 0 0; }
+.msf-dots li { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.72rem; color: var(--color-text-muted); }
+.msf-dot {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 0.72rem; font-weight: 500;
+  background: #fff; border: 1.5px solid var(--color-border); color: var(--color-text-muted);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.msf-dots li[data-step-state="active"] { color: var(--color-text); font-weight: 500; }
+.msf-dots li[data-step-state="active"] .msf-dot { border-color: var(--color-cta); color: var(--color-cta); }
+.msf-dots li[data-step-state="completed"] .msf-dot { background: var(--color-cta); border-color: var(--color-cta); color: #fff; }
+.msf-dots li[data-step-state="error"] .msf-dot { border-color: #B23A3A; color: #B23A3A; }
+
+/* Without JS every step is visible; with JS only the active one. */
+.msf.is-enhanced .msf-step[hidden] { display: none; }
+.msf.is-enhanced .msf-step:not([hidden]) { animation: msf-in 0.3s ease; }
+@keyframes msf-in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+.msf:not(.is-enhanced) .msf-step { margin-bottom: 28px; }
+.msf:not(.is-enhanced) [data-msf-next],
+.msf:not(.is-enhanced) [data-msf-back] { display: none; }
+
+/* Choice cards (radio / checkbox) */
+.choice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.choice { position: relative; display: block; cursor: pointer; }
+.choice input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; z-index: 1; }
+.choice-box {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 52px; padding: 12px 16px;
+  background: #fff; border: 1.5px solid var(--color-border); border-radius: var(--radius-md);
+  font-size: 0.95rem; color: var(--color-text);
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.choice-box::before {
+  content: ''; flex-shrink: 0;
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--color-gold); border-radius: 50%;
+  background: #fff;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.choice input[type="checkbox"] + .choice-box::before { border-radius: 4px; }
+.choice:hover .choice-box { border-color: var(--color-gold); transform: translateY(-1px); }
+.choice input:checked + .choice-box {
+  border-color: var(--color-cta);
+  background: var(--color-bg-alt);
+  box-shadow: 0 0 0 1px var(--color-cta);
+}
+.choice input:checked + .choice-box::before { background: var(--color-cta); box-shadow: inset 0 0 0 3px #fff; border-color: var(--color-cta); }
+.choice input[type="checkbox"]:checked + .choice-box::before {
+  box-shadow: none;
+  background: var(--color-cta) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat;
+}
+.choice input:focus-visible + .choice-box { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+.msf-step[data-step-state="error"] .choice-box { border-color: #E3B4B4; }
+
+/* Errors */
+.field-error { color: #B23A3A; font-size: 0.85rem; margin: 6px 0 0; min-height: 0; }
+.field-error:empty { display: none; }
+.field input[aria-invalid="true"] { border-color: #B23A3A; }
+.msf .form-grid .field { margin-bottom: 0; }
+.msf-general-error {
+  margin-top: 16px; padding: 16px 18px;
+  border: 1px solid #E3B4B4; background: #FBF0F0; border-radius: var(--radius-md);
+}
+.msf-general-error p { color: #8E2C2C; margin-bottom: 12px; font-weight: 500; }
+
+.msf-consent { font-size: 0.8rem; line-height: 1.5; margin: 18px 0 0; }
+
+/* Navigation */
+.msf-nav { display: flex; align-items: center; gap: 12px; margin-top: 24px; }
+.msf-nav [data-msf-next],
+.msf-nav [data-msf-submit] { margin-left: auto; }
+.msf-nav .btn[hidden] { display: none; }
+.btn-ghost { background: transparent; color: var(--color-text-muted); padding-left: 4px; padding-right: 4px; }
+.btn-ghost:hover { color: var(--color-text); }
+.btn:disabled { opacity: 0.65; cursor: not-allowed; }
+.msf[data-state="submitting"] [data-msf-submit] { cursor: progress; }
+
+@media (max-width: 560px) {
+  .choice-grid { grid-template-columns: 1fr; }
+  .msf .form-grid { grid-template-columns: 1fr; }
+  .msf-dot-label { display: none; }
+  .msf-title { font-size: 1.25rem; }
+  .msf-nav [data-msf-next],
+  .msf-nav [data-msf-submit] { flex: 1; text-align: center; }
+}
+
+/* Seller thank-you */
+.thanks-inner { max-width: 720px; }
+.thanks-check { color: #3F7A4E; margin-bottom: 18px; }
+.thanks-steps { list-style: none; padding: 0; margin: 8px 0 28px; display: grid; gap: 12px; }
+.thanks-steps li { display: flex; align-items: center; gap: 14px; color: var(--color-text); }
+.thanks-steps .step-number { flex-shrink: 0; margin: 0; width: 32px; height: 32px; font-size: 0.9rem; }
+.thanks-more { margin-top: 18px; }
+.thanks-more a { color: var(--color-cta); font-weight: 500; }
+
+@media (prefers-reduced-motion: reduce) {
+  .msf.is-enhanced .msf-step:not([hidden]) { animation: none; }
+  .msf-bar span, .choice-box { transition: none; }
+}
