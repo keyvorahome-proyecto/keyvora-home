@@ -161,7 +161,7 @@ export const investors = {
     }
   },
   es: {
-    title: 'Oportunidades Off-Market en Cleveland para Inversionistas | Keyvora Home',
+    title: 'Oportunidades Off-Market en Cleveland | Keyvora Home',
     description:
       'Contanos qué comprás, dónde y cómo invertís. Keyvora Home guarda tus criterios y te contacta cuando aparece una oportunidad relevante en Cleveland.',
     sticky: 'Armar mi perfil de inversionista',

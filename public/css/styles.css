@@ -403,7 +403,7 @@ img { max-width: 100%; display: block; }
 }
 
 .jv-block a {
-  color: var(--color-gold);
+  color: #C9B49F; /* lighter gold: 4.5:1+ on the dark footer */
   text-decoration: underline;
 }
 
@@ -1023,3 +1023,8 @@ a.situation-card:hover .card-link { text-decoration: underline; }
 .footer-legal a { color: var(--color-footer-text); }
 .footer-legal a:hover { color: #fff; }
 .msf-consent a { color: var(--color-cta); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}

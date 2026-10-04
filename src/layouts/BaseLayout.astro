@@ -73,9 +73,9 @@ const esUrl = site + routes[route].es;
 <Footer lang={lang} />
 
 {stickyCta && (
-  <div class="sticky-cta">
+  <aside class="sticky-cta" aria-label={stickyCta.label}>
     <a class="btn btn-primary btn-block" href={stickyCta.href}>{stickyCta.label}</a>
-  </div>
+  </aside>
 )}
 
 <script is:inline src="/js/main.js"></script>

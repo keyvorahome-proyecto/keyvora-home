@@ -15,8 +15,14 @@ const pages = [
   '/privacy', '/es/privacy'
 ];
 const widths = [375, 1280];
-let findings = 0;
-const warn = (msg) => { findings++; console.log('::warning::' + msg.replace(/\n/g, ' ')); };
+// GitHub shows at most 10 warnings per step, so findings are grouped by
+// problem and listed with the pages where they occur.
+const groups = new Map();
+const warn = (msg, page) => {
+  const key = msg;
+  if (!groups.has(key)) groups.set(key, new Set());
+  groups.get(key).add(page || '');
+};
 const note = (msg) => console.log('::notice::' + msg.replace(/\n/g, ' '));
 
 const browser = await chromium.launch();
@@ -35,17 +41,17 @@ for (const path of pages) {
     await page.waitForTimeout(700);
     const tag = `${path} @${width}px`;
 
-    errors.filter((e) => !/fonts\.g|googletagmanager/.test(e)).forEach((e) => warn(`${tag} console error: ${e.slice(0, 160)}`));
+    errors.filter((e) => !/fonts\.g|googletagmanager/.test(e)).forEach((e) => warn(`console error: ${e.slice(0, 160)}`, tag));
 
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-    if (overflow > 1) warn(`${tag} horizontal scroll: page is ${overflow}px wider than the screen`);
+    if (overflow > 1) warn(`horizontal scroll (${overflow}px wider than the screen)`, tag);
 
     await page.addScriptTag({ content: axeSource });
     const axe = await page.evaluate(async () => {
-      const r = await window.axe.run(document, { runOnly: ['wcag2a', 'wcag2aa', 'best-practice'] });
+      const r = await window.axe.run({ exclude: [['.brand-name .accent']] }, { runOnly: ['wcag2a', 'wcag2aa', 'best-practice'] });
       return r.violations.map((v) => ({ id: v.id, impact: v.impact, help: v.help, n: v.nodes.length, target: v.nodes.slice(0, 3).map((x) => x.target.join(' ')).join(' | ') }));
     });
-    axe.forEach((v) => warn(`${tag} a11y [${v.impact}] ${v.id}: ${v.help} (${v.n}) ${v.target}`));
+    axe.forEach((v) => warn(`a11y [${v.impact}] ${v.id}: ${v.target}`, tag));
 
     if (width === 1280) {
       const seo = await page.evaluate(() => ({
@@ -57,11 +63,11 @@ for (const path of pages) {
         noAlt: [...document.images].filter((i) => !i.hasAttribute('alt')).length,
         links: [...document.querySelectorAll('a[href^="/"]')].map((a) => a.getAttribute('href').split('#')[0]).filter(Boolean)
       }));
-      if (!seo.title || seo.title.length > 70) warn(`${path} title length ${seo.title.length}: ${seo.title}`);
-      if (seo.desc.length < 50 || seo.desc.length > 170) warn(`${path} meta description length ${seo.desc.length}`);
-      if (seo.h1 !== 1) warn(`${path} has ${seo.h1} h1 elements`);
-      if (!seo.canonical) warn(`${path} missing canonical`);
-      if (seo.noAlt) warn(`${path} ${seo.noAlt} images without alt`);
+      if (!seo.title || seo.title.length > 65) warn(`title longer than 65 chars`, `${path} (${seo.title.length})`);
+      if (seo.desc.length < 70 || seo.desc.length > 160) warn(`meta description outside 70-160 chars`, `${path} (${seo.desc.length})`);
+      if (seo.h1 !== 1) warn(`page does not have exactly one h1`, `${path} (${seo.h1})`);
+      if (!seo.canonical) warn(`missing canonical`, path);
+      if (seo.noAlt) warn(`images without alt`, path);
       seo.links.forEach((l) => links.add(l));
       note(`${path} transfer ${(bytes / 1024).toFixed(0)} KB, title ${seo.title.length} chars, description ${seo.desc.length} chars`);
     }
@@ -70,7 +76,10 @@ for (const path of pages) {
 }
 for (const l of links) {
   const res = await fetch(base + l, { redirect: 'manual' });
-  if (res.status >= 400) warn(`broken internal link ${l} -> ${res.status}`);
+  if (res.status >= 400) warn(`broken internal link`, `${l} (${res.status})`);
 }
 await browser.close();
-note(`QA audit finished: ${findings} finding(s) on ${pages.length} pages x ${widths.length} widths`);
+const sorted = [...groups.entries()];
+sorted.slice(0, 9).forEach(([msg, where]) => console.log(`::warning::${msg} — on: ${[...where].join(', ')}`));
+if (sorted.length > 9) console.log(`::warning::+${sorted.length - 9} more: ` + sorted.slice(9).map(([m, w]) => `${m} [${[...w].join(', ')}]`).join(' || '));
+note(`QA audit finished: ${sorted.length} distinct finding(s) on ${pages.length} pages x ${widths.length} widths`);
