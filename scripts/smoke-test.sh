@@ -114,5 +114,6 @@ check_contains /es/investors/thank-you 'Ya estás en la lista de inversionistas 
 # Analytics (spec 86)
 check_contains / 'window.gtag = function'
 check_contains /investors 'window.gtag = function'
+check_contains / 'G-MBH8MRM2ES'
 
 exit $fail
