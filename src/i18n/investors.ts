@@ -44,7 +44,7 @@ export const investors = {
   en: {
     title: 'Cleveland Off-Market Opportunities for Investors | Keyvora Home',
     description:
-      "Tell us what you buy, where you buy it and how you invest. Keyvora Home saves your criteria and reaches out when a relevant Cleveland opportunity becomes available.",
+      'Tell us what you buy, where and how you invest. Keyvora Home saves your criteria and contacts you when a relevant Cleveland opportunity comes up.',
     sticky: 'Build my investor profile',
     hero: {
       eyebrow: 'For investors',
