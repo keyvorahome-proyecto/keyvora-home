@@ -111,4 +111,8 @@ check_contains /investors/thank-you 'on the Keyvora investor list.'
 check_contains /investors/thank-you 'noindex'
 check_contains /es/investors/thank-you 'Ya estás en la lista de inversionistas de Keyvora.'
 
+# Analytics (spec 86)
+check_contains / 'window.gtag = function'
+check_contains /investors 'window.gtag = function'
+
 exit $fail

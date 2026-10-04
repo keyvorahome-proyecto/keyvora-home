@@ -8,27 +8,55 @@ const LEAD_ENDPOINTS = {
 };
 
 const SOURCE_KEY = 'keyvora_lead_source';
+const SOURCE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
 
-// Remember where the visitor came from (UTM tags or referrer) for this browser session.
+// Remember where the visitor came from (spec 86): all five UTM tags when
+// present, otherwise the external referrer. Kept for 30 days; a new
+// campaign visit replaces it, a direct visit never overwrites a known source.
 function captureLeadSource() {
   try {
-    if (sessionStorage.getItem(SOURCE_KEY)) return;
     const params = new URLSearchParams(window.location.search);
-    const utm = ['utm_source', 'utm_medium', 'utm_campaign']
-      .map((k) => params.get(k))
-      .filter(Boolean)
-      .join(' / ');
+    const utm = UTM_KEYS.filter((k) => params.get(k))
+      .map((k) => k + '=' + params.get(k).trim().slice(0, 100))
+      .join('; ');
     let source = utm;
     if (!source && document.referrer) {
       const ref = new URL(document.referrer);
       if (ref.hostname !== window.location.hostname) source = 'referrer: ' + ref.hostname;
     }
-    sessionStorage.setItem(SOURCE_KEY, source || 'direct');
+    const saved = readSavedSource();
+    if (source || !saved) {
+      localStorage.setItem(SOURCE_KEY, JSON.stringify({ value: source || 'direct', ts: Date.now() }));
+    }
   } catch (e) { /* storage unavailable */ }
 }
 
+function readSavedSource() {
+  try {
+    const raw = localStorage.getItem(SOURCE_KEY);
+    if (!raw) return '';
+    const data = JSON.parse(raw);
+    if (!data || Date.now() - data.ts > SOURCE_TTL_MS) return '';
+    return String(data.value || '');
+  } catch (e) { return ''; }
+}
+
 function getLeadSource() {
-  try { return sessionStorage.getItem(SOURCE_KEY) || ''; } catch (e) { return ''; }
+  return readSavedSource() || 'direct';
+}
+
+// ------------------------------------------------------------------
+// Analytics (spec 86). Events go to GA4 through gtag (set up in the page
+// head). Only form names, step numbers and button labels are sent: never
+// names, phone numbers, emails or addresses.
+// ------------------------------------------------------------------
+function track(name, params) {
+  const data = Object.assign({ page_language: (document.documentElement.lang || 'en').slice(0, 2) }, params || {});
+  try {
+    (window.__kvEvents = window.__kvEvents || []).push({ name: name, params: data });
+    if (typeof window.gtag === 'function') window.gtag('event', name, data);
+  } catch (e) { /* analytics must never break the page */ }
 }
 
 function newSubmissionId() {
@@ -56,6 +84,22 @@ function getFormMessages() {
 
 document.addEventListener('DOMContentLoaded', () => {
   captureLeadSource();
+
+  // CTA, call and text clicks anywhere on the page (form navigation excluded).
+  document.addEventListener('click', (e) => {
+    const el = e.target instanceof Element ? e.target.closest('a, button') : null;
+    if (!el || el.closest('form[data-multistep]')) return;
+    const href = el.getAttribute('href') || '';
+    const label = (el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 60);
+    const section = el.closest('[id], section, header, footer, .sticky-cta');
+    const location = el.closest('.sticky-cta') ? 'sticky' : el.closest('header') ? 'header' : el.closest('footer') ? 'footer'
+      : (section && section.id) || (section && section.className.split(' ')[0]) || 'page';
+    if (href.startsWith('tel:')) track('click_to_call', { link_location: location });
+    else if (href.startsWith('sms:')) track('click_to_text', { link_location: location });
+    else if (el.matches('.btn, .nav-cta, .situation-card, .card-link, .thanks-more a')) {
+      track('cta_click', { cta_text: label, cta_location: location, link_url: href.split('#')[0] || window.location.pathname, link_anchor: href.includes('#') ? href.split('#')[1] : '' });
+    }
+  }, true);
 
   // Home "Start with your property": pass the address to the seller form
   // through sessionStorage (not the URL, so it never shows up in analytics).
@@ -431,8 +475,35 @@ function initMultiStepForm(form, keys) {
     return payload;
   }
 
+  const stepName = (n) => {
+    const dot = dots[n - 1] ? dots[n - 1].querySelector('.msf-dot-label') : null;
+    return (stepEl(n).dataset.track || (dot ? dot.textContent : '') || String(n)).trim();
+  };
+  let started = false;
+  let finished = false;
+  let furthest = 1;
+  const markStart = () => {
+    if (started) return;
+    started = true;
+    track('lead_form_start', { form_name: kind });
+  };
+  form.addEventListener('input', markStart);
+  form.addEventListener('change', markStart);
+  // Leaving the page after starting but before a successful submit (spec 86).
+  const reportAbandon = () => {
+    if (!started || finished) return;
+    finished = true;
+    track('lead_form_abandon', { form_name: kind, step_number: current, step_name: stepName(current), furthest_step: furthest });
+  };
+  window.addEventListener('pagehide', reportAbandon);
+
   function goNext() {
-    if (!validate(current)) return;
+    if (!validate(current)) {
+      track('lead_form_validation_error', { form_name: kind, step_number: current, step_name: stepName(current) });
+      return;
+    }
+    track('lead_form_step', { form_name: kind, step_number: current, step_name: stepName(current) });
+    if (current + 1 > furthest) furthest = current + 1;
     setStepState(current, 'completed');
     if (current < total) show(current + 1, { focus: true });
   }
@@ -522,6 +593,7 @@ function initMultiStepForm(form, keys) {
     for (let n = 1; n <= total; n++) {
       if (!validate(n)) {
         if (n !== current) { show(n, { focus: true }); validate(n); }
+        track('lead_form_validation_error', { form_name: kind, step_number: n, step_name: stepName(n) });
         return;
       }
       if (n !== current) setStepState(n, 'completed');
@@ -548,11 +620,18 @@ function initMultiStepForm(form, keys) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      if (!res.ok) throw new Error('Request failed: ' + res.status);
+      if (!res.ok) { const err = new Error('Request failed'); err.status = res.status; throw err; }
       form.dataset.state = 'success';
+      finished = true;
       delete form.dataset.submissionId;
-      window.location.href = thanksUrl;
+      // GA4 recommended conversion event. Wait briefly so it is sent before leaving.
+      let left = false;
+      const leave = () => { if (!left) { left = true; window.location.href = thanksUrl; } };
+      track('generate_lead', { form_name: kind, lead_type: kind, event_callback: leave, event_timeout: 800 });
+      if (typeof window.gtag !== 'function' || !window.__kvGaLoaded) leave();
+      setTimeout(leave, 900);
     } catch (err) {
+      track('lead_form_submit_error', { form_name: kind, error_type: err && err.status ? 'http_' + err.status : 'network' });
       // Keep everything the visitor typed so they can simply try again.
       form.dataset.state = 'error';
       if (generalError) { generalError.hidden = false; }
