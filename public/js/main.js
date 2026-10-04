@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  document.querySelectorAll('form[data-multistep]').forEach((form) => initSellerForm(form, { PREFILL_KEY, SITUATION_KEY, TIMELINE_KEY }));
+  document.querySelectorAll('form[data-multistep]').forEach((form) => initMultiStepForm(form, { PREFILL_KEY, SITUATION_KEY, TIMELINE_KEY }));
 
   // Mobile nav toggle
   const navToggle = document.querySelector('.nav-toggle');
@@ -214,11 +214,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ------------------------------------------------------------------
-// Seller multi-step form (spec 28–40)
+// Multi-step lead forms: seller (spec 28–40) and investor (spec 46–53).
+// Each step declares how it is validated with data-validate (address,
+// range, area, contact) or data-choice (radio, checkbox).
 // Form states: idle, active, submitting, success, error.
 // Step states: unvisited, active, completed, error.
 // ------------------------------------------------------------------
-function initSellerForm(form, keys) {
+function initMultiStepForm(form, keys) {
+  const kind = form.dataset.leadForm;
   const steps = Array.from(form.querySelectorAll('.msf-step'));
   const dots = Array.from(form.querySelectorAll('.msf-dots li'));
   const total = steps.length;
@@ -277,25 +280,44 @@ function initSellerForm(form, keys) {
   function validate(n) {
     const el = stepEl(n);
     let ok = true;
-    if (n === 1) {
+    const rule = el.dataset.validate;
+    if (rule === 'address') {
       const value = form.address.value.trim();
       ok = value.length >= 3;
       setFieldError('address', ok ? '' : errors.address);
     } else if (el.dataset.choice) {
       const name = el.querySelector('input').name;
       ok = Boolean(el.querySelector('input:checked'));
-      setFieldError(name, ok ? '' : (el.dataset.choice === 'checkbox' ? errors.situation : errors.choice));
-    } else {
+      setFieldError(name, ok ? '' : (el.dataset.choice === 'checkbox' ? errors.multi : errors.choice));
+    } else if (rule === 'range') {
+      const r = readRange();
+      ok = r.min !== null && (r.max === null || r.min <= r.max);
+      setFieldError('range', ok ? '' : errors.range);
+    } else if (rule === 'area') {
+      const zips = splitList(form.zips.value);
+      const badZip = zips.some((z) => !/^\d{5}$/.test(z));
+      const hasArea = zips.length > 0 || readAreas().length > 0;
+      ok = hasArea && !badZip;
+      setFieldError('zips', badZip ? errors.zip : '');
+      setFieldError('area', hasArea ? '' : errors.area);
+    } else if (rule === 'contact') {
+      const investor = el.dataset.contact === 'investor';
       const first = form.firstName.value.trim();
       const phone = form.phone.value.trim();
       const email = form.email.value.trim();
       const digits = phone.replace(/\D/g, '').length;
       const phoneBad = phone !== '' && (digits < 10 || digits > 15);
       const emailBad = email !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-      const missing = phone === '' && email === '';
+      // Sellers: phone or email. Investors: email is required, phone optional.
+      const missing = investor ? email === '' : phone === '' && email === '';
       setFieldError('firstName', first ? '' : errors.firstName);
-      setFieldError('phone', phoneBad ? errors.phone : (missing ? errors.contact : ''));
-      setFieldError('email', emailBad ? errors.email : '');
+      if (investor) {
+        setFieldError('email', emailBad ? errors.email : (missing ? errors.emailRequired : ''));
+        setFieldError('phone', phoneBad ? errors.phone : '');
+      } else {
+        setFieldError('phone', phoneBad ? errors.phone : (missing ? errors.contact : ''));
+        setFieldError('email', emailBad ? errors.email : '');
+      }
       ok = Boolean(first) && !phoneBad && !emailBad && !missing;
     }
     setStepState(n, ok ? (n === current ? 'active' : 'completed') : 'error');
@@ -304,6 +326,109 @@ function initSellerForm(form, keys) {
       if (bad && n === current) bad.focus();
     }
     return ok;
+  }
+
+  const splitList = (v) => String(v || '').split(/[,;\n]+/).map((x) => x.trim()).filter(Boolean);
+  const readAreas = () => {
+    const picked = Array.from(form.querySelectorAll('input[name="neighborhood"]:checked')).map((i) => i.value);
+    const other = form.otherAreas ? splitList(form.otherAreas.value) : [];
+    return Array.from(new Set(picked.concat(other))).slice(0, 30);
+  };
+
+  // Purchase range: two sliders + two editable numbers. The slider tops out at
+  // data-cap ($500k); an empty maximum means "no maximum" (spec 49).
+  const rangeBox = form.querySelector('.range-field');
+  const cap = rangeBox ? Number(rangeBox.dataset.cap) : 0;
+  const parseMoney = (v) => {
+    const digits = String(v || '').replace(/[^\d]/g, '');
+    return digits === '' ? null : Math.min(Number(digits), 100000000);
+  };
+  function readRange() {
+    if (!rangeBox) return { min: null, max: null };
+    return { min: parseMoney(form.minPrice.value) ?? 0, max: parseMoney(form.maxPrice.value) };
+  }
+  function paintRange() {
+    if (!rangeBox) return;
+    const lo = Number(form.minRange.value);
+    const hi = Number(form.maxRange.value);
+    rangeBox.style.setProperty('--lo', (lo / cap) * 100 + '%');
+    rangeBox.style.setProperty('--hi', (hi / cap) * 100 + '%');
+    const r = readRange();
+    const fmt = (x) => '$' + Number(x).toLocaleString('en-US');
+    const out = rangeBox.querySelector('.range-summary');
+    if (out) out.textContent = r.max === null ? fmt(r.min) + '+ · ' + rangeBox.dataset.noMax : fmt(r.min) + ' – ' + fmt(r.max);
+  }
+  if (rangeBox) {
+    const step = Number(form.minRange.step) || 5000;
+    const commas = (x) => Number(x).toLocaleString('en-US');
+    const fromSliders = () => {
+      form.minPrice.value = commas(form.minRange.value);
+      form.maxPrice.value = Number(form.maxRange.value) >= cap ? '' : commas(form.maxRange.value);
+      paintRange();
+    };
+    form.minRange.addEventListener('input', () => {
+      if (Number(form.minRange.value) > Number(form.maxRange.value)) form.maxRange.value = form.minRange.value;
+      fromSliders();
+    });
+    form.maxRange.addEventListener('input', () => {
+      if (Number(form.maxRange.value) < Number(form.minRange.value)) form.minRange.value = form.maxRange.value;
+      fromSliders();
+    });
+    // Tidy the typed amount when the visitor leaves the box.
+    [form.minPrice, form.maxPrice].forEach((input) => input.addEventListener('blur', () => {
+      const v = parseMoney(input.value);
+      input.value = v === null ? '' : commas(v);
+    }));
+    const syncFromNumbers = () => {
+      const r = readRange();
+      form.minRange.value = String(Math.min(cap, Math.round((r.min || 0) / step) * step));
+      form.maxRange.value = String(r.max === null ? cap : Math.min(cap, Math.round(r.max / step) * step));
+      paintRange();
+    };
+    form.minPrice.addEventListener('input', syncFromNumbers);
+    form.maxPrice.addEventListener('input', syncFromNumbers);
+    paintRange();
+  }
+
+  function buildPayload() {
+    const value = (name) => (form[name] && form[name].value ? form[name].value.trim() : '');
+    const checked = (name) => {
+      const el = form.querySelector('input[name="' + name + '"]:checked');
+      return el ? el.value : undefined;
+    };
+    const all = (name) => Array.from(form.querySelectorAll('input[name="' + name + '"]:checked')).map((i) => i.value);
+    let payload;
+    if (kind === 'investor') {
+      const r = readRange();
+      payload = {
+        propertyTypes: all('propertyTypes'),
+        strategies: all('strategies'),
+        minPrice: r.min,
+        maxPrice: r.max,
+        zips: splitList(form.zips.value),
+        neighborhoods: readAreas(),
+        preferredCondition: all('preferredCondition'),
+        funding: all('funding'),
+        firstName: value('firstName'),
+        email: value('email')
+      };
+    } else {
+      payload = {
+        address: value('address'),
+        propertyType: checked('propertyType'),
+        condition: checked('condition'),
+        situation: all('situation'),
+        timeline: checked('timeline'),
+        firstName: value('firstName')
+      };
+      if (value('email')) payload.email = value('email');
+    }
+    ['lastName', 'phone'].forEach((k) => { if (value(k)) payload[k] = value(k); });
+    payload.submissionId = form.dataset.submissionId;
+    payload.language = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase() === 'es' ? 'es' : 'en';
+    payload.leadSource = getLeadSource();
+    payload.landingPage = window.location.pathname;
+    return payload;
   }
 
   function goNext() {
@@ -330,6 +455,8 @@ function initSellerForm(form, keys) {
     if (step.dataset.choice) {
       setFieldError(target.name, '');
       setStepState(n, n === current ? 'active' : 'completed');
+    } else if (step.dataset.validate === 'area' || step.dataset.validate === 'range') {
+      if (validate(n) && n === current) setStepState(n, 'active');
     } else if (target.id) {
       setFieldError(target.id, '');
       if (target.id === 'phone' || target.id === 'email') { setFieldError('phone', ''); setFieldError('email', ''); }
@@ -354,7 +481,7 @@ function initSellerForm(form, keys) {
 
   // Prefill from the Home page (address box and situation cards).
   let prefilledAddress = false;
-  try {
+  if (kind === 'seller') try {
     const saved = sessionStorage.getItem(keys.PREFILL_KEY);
     if (saved && !form.address.value) { form.address.value = saved; prefilledAddress = true; }
     sessionStorage.removeItem(keys.PREFILL_KEY);
@@ -407,24 +534,7 @@ function initSellerForm(form, keys) {
     }
 
     if (!form.dataset.submissionId) form.dataset.submissionId = newSubmissionId();
-    const value = (name) => (form[name] && form[name].value ? form[name].value.trim() : '');
-    const checked = (name) => {
-      const el = form.querySelector('input[name="' + name + '"]:checked');
-      return el ? el.value : undefined;
-    };
-    const payload = {
-      address: value('address'),
-      propertyType: checked('propertyType'),
-      condition: checked('condition'),
-      situation: Array.from(form.querySelectorAll('input[name="situation"]:checked')).map((i) => i.value),
-      timeline: checked('timeline'),
-      firstName: value('firstName'),
-      submissionId: form.dataset.submissionId,
-      language: (document.documentElement.lang || 'en').slice(0, 2).toLowerCase() === 'es' ? 'es' : 'en',
-      leadSource: getLeadSource(),
-      landingPage: window.location.pathname
-    };
-    ['lastName', 'phone', 'email'].forEach((k) => { if (value(k)) payload[k] = value(k); });
+    const payload = buildPayload();
 
     form.dataset.state = 'submitting';
     if (generalError) generalError.hidden = true;
@@ -433,7 +543,7 @@ function initSellerForm(form, keys) {
     if (backBtn) backBtn.disabled = true;
 
     try {
-      const res = await fetch(LEAD_ENDPOINTS.seller, {
+      const res = await fetch(LEAD_ENDPOINTS[kind], {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

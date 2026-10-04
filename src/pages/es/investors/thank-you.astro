@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Thanks from '../../../components/Thanks.astro';
+import { investors } from '../../../i18n/investors';
+import { routes } from '../../../i18n/ui';
+
+const t = investors.es.thanks;
+---
+<BaseLayout lang="es" route="investorThanks" title={t.title} description={t.description} faqHref="/es/investors#faq" noindex>
+  <Thanks lang="es" copy={t} howHref={routes.investors.es + '#how-it-works'} />
+</BaseLayout>

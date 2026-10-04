@@ -1,0 +1,165 @@
+---
+// Investor profile builder (spec 46–53). Uses the shared multi-step engine in
+// public/js/main.js (initMultiStepForm). Without JavaScript every step is
+// shown at once.
+import { investors, AREAS, RANGE } from '../i18n/investors';
+import { routes, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = investors[lang].form;
+const total = 7;
+const money = (n: number) => n.toLocaleString('en-US');
+
+const choice = (n: number, name: string, step: { title: string; options: { value: string; label: string }[] }) => ({ n, name, ...step });
+const before = [choice(1, 'propertyTypes', t.propertyTypes), choice(2, 'strategies', t.strategies)];
+const after = [choice(5, 'preferredCondition', t.preferredCondition), choice(6, 'funding', t.funding)];
+---
+<form
+  class="form-wrap msf"
+  data-lead-form="investor"
+  data-multistep
+  data-state="idle"
+  data-thanks={routes.investorThanks[lang]}
+  data-progress={t.progress}
+  data-errors={JSON.stringify(t.errors)}
+  data-submitting={t.submitting}
+  novalidate
+>
+  <div class="hp-field" aria-hidden="true">
+    <label for="website_url">Website</label>
+    <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
+  </div>
+
+  <div class="msf-progress">
+    <p class="msf-count" aria-live="polite">{t.progress.replace('{n}', '1').replace('{total}', String(total))}</p>
+    <div class="msf-bar" aria-hidden="true"><span style={`width:${100 / total}%`}></span></div>
+    <ol class="msf-dots" aria-hidden="true" style={`--steps:${total}`}>
+      {t.stepNames.map((name, i) => (
+        <li data-step-state={i === 0 ? 'active' : 'unvisited'}><span class="msf-dot">{i + 1}</span><span class="msf-dot-label">{name}</span></li>
+      ))}
+    </ol>
+  </div>
+
+  {before.map((step) => (
+    <fieldset class="msf-step" data-step={step.n} data-step-state={step.n === 1 ? 'active' : 'unvisited'} data-choice="checkbox">
+      <legend class="msf-title">{step.title}</legend>
+      <p class="msf-hint">{t.chooseAll}</p>
+      <div class="choice-grid">
+        {step.options.map((opt, i) => (
+          <label class="choice">
+            <input type="checkbox" name={step.name} value={opt.value} id={`${step.name}-${i}`}>
+            <span class="choice-box">{opt.label}</span>
+          </label>
+        ))}
+      </div>
+      <p class="field-error" id={`${step.name}-error`}></p>
+    </fieldset>
+  ))}
+
+  <fieldset class="msf-step" data-step="3" data-step-state="unvisited" data-validate="range">
+    <legend class="msf-title">{t.range.title}</legend>
+    <p class="msf-hint">{t.range.hint}</p>
+    <div class="range-field" data-cap={RANGE.cap} data-no-max={t.range.noMax}>
+      <p class="range-summary" aria-live="polite">${money(RANGE.defaultMin)} – ${money(RANGE.defaultMax)}</p>
+      <div class="range-sliders">
+        <div class="range-track" aria-hidden="true"></div>
+        <input type="range" id="minRange" name="minRange" min="0" max={RANGE.cap} step={RANGE.step} value={RANGE.defaultMin} aria-label={t.range.minSlider}>
+        <input type="range" id="maxRange" name="maxRange" min="0" max={RANGE.cap} step={RANGE.step} value={RANGE.defaultMax} aria-label={t.range.maxSlider}>
+      </div>
+      <div class="range-scale" aria-hidden="true"><span>$0</span><span>$250k</span><span>$500k+</span></div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="minPrice">{t.range.min}</label>
+          <div class="money-input"><span aria-hidden="true">$</span><input type="text" inputmode="numeric" id="minPrice" name="minPrice" value={money(RANGE.defaultMin)} maxlength="12" autocomplete="off"></div>
+        </div>
+        <div class="field">
+          <label for="maxPrice">{t.range.max}</label>
+          <div class="money-input"><span aria-hidden="true">$</span><input type="text" inputmode="numeric" id="maxPrice" name="maxPrice" value={money(RANGE.defaultMax)} placeholder={t.range.maxPlaceholder} maxlength="12" autocomplete="off"></div>
+        </div>
+      </div>
+      <p class="field-error" id="range-error"></p>
+    </div>
+  </fieldset>
+
+  <fieldset class="msf-step" data-step="4" data-step-state="unvisited" data-validate="area">
+    <legend class="msf-title">{t.area.title}</legend>
+    <p class="msf-hint">{t.area.hint}</p>
+    <div class="field">
+      <label for="zips">{t.area.zips}</label>
+      <input type="text" id="zips" name="zips" inputmode="numeric" placeholder={t.area.zipsPlaceholder} maxlength="400" autocomplete="off" aria-describedby="zips-error">
+      <p class="field-error" id="zips-error"></p>
+    </div>
+    <p class="chip-label">{t.area.picks}</p>
+    <div class="chip-grid">
+      {AREAS.map((area, i) => (
+        <label class="chip">
+          <input type="checkbox" name="neighborhood" value={area} id={`area-${i}`}>
+          <span>{area}</span>
+        </label>
+      ))}
+    </div>
+    <div class="field">
+      <label for="otherAreas">{t.area.other} <span class="opt">{t.optional}</span></label>
+      <input type="text" id="otherAreas" name="otherAreas" placeholder={t.area.otherPlaceholder} maxlength="400" autocomplete="off">
+    </div>
+    <p class="field-error" id="area-error"></p>
+  </fieldset>
+
+  {after.map((step) => (
+    <fieldset class="msf-step" data-step={step.n} data-step-state="unvisited" data-choice="checkbox">
+      <legend class="msf-title">{step.title}</legend>
+      <p class="msf-hint">{t.chooseAll}</p>
+      <div class="choice-grid">
+        {step.options.map((opt, i) => (
+          <label class="choice">
+            <input type="checkbox" name={step.name} value={opt.value} id={`${step.name}-${i}`}>
+            <span class="choice-box">{opt.label}</span>
+          </label>
+        ))}
+      </div>
+      <p class="field-error" id={`${step.name}-error`}></p>
+    </fieldset>
+  ))}
+
+  <fieldset class="msf-step" data-step="7" data-step-state="unvisited" data-validate="contact" data-contact="investor">
+    <legend class="msf-title">{t.contact.title}</legend>
+    <p class="msf-hint">{t.contact.hint}</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="firstName">{t.contact.firstName}</label>
+        <input type="text" id="firstName" name="firstName" autocomplete="given-name" maxlength="80" required aria-describedby="firstName-error">
+        <p class="field-error" id="firstName-error"></p>
+      </div>
+      <div class="field">
+        <label for="lastName">{t.contact.lastName} <span class="opt">{t.optional}</span></label>
+        <input type="text" id="lastName" name="lastName" autocomplete="family-name" maxlength="80">
+      </div>
+      <div class="field">
+        <label for="email">{t.contact.email}</label>
+        <input type="email" id="email" name="email" autocomplete="email" maxlength="254" required aria-describedby="email-error">
+        <p class="field-error" id="email-error"></p>
+      </div>
+      <div class="field">
+        <label for="phone">{t.contact.phone} <span class="opt">{t.optional}</span></label>
+        <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" maxlength="40" aria-describedby="phone-error">
+        <p class="field-error" id="phone-error"></p>
+      </div>
+    </div>
+    <p class="msf-consent">{t.consent}</p>
+  </fieldset>
+
+  <div class="msf-general-error" role="alert" hidden>
+    <p>{t.errors.general}</p>
+    <button type="submit" class="btn btn-secondary">{t.tryAgain}</button>
+  </div>
+
+  <div class="msf-nav">
+    <button type="button" class="btn btn-ghost" data-msf-back hidden>{t.back}</button>
+    <button type="button" class="btn btn-primary" data-msf-next>{t.next}</button>
+    <button type="submit" class="btn btn-primary" data-msf-submit>{t.submit}</button>
+  </div>
+</form>

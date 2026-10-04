@@ -1,6 +1,6 @@
 ---
 // Seller multi-step form (spec 28–40). Works with public/js/main.js
-// (initSellerForm). Without JavaScript all steps are shown at once and the
+// (initMultiStepForm). Without JavaScript all steps are shown at once and the
 // form is still usable up to the submit button.
 import { sellerForm } from '../i18n/sellerForm';
 import { routes, type Lang } from '../i18n/ui';
@@ -47,7 +47,7 @@ const choiceSteps = [
     </ol>
   </div>
 
-  <fieldset class="msf-step" data-step="1" data-step-state="active">
+  <fieldset class="msf-step" data-step="1" data-step-state="active" data-validate="address">
     <legend class="msf-title">{s.address.title}</legend>
     <p class="msf-hint">{s.address.hint}</p>
     <div class="field">
@@ -73,7 +73,7 @@ const choiceSteps = [
     </fieldset>
   ))}
 
-  <fieldset class="msf-step" data-step="6" data-step-state="unvisited">
+  <fieldset class="msf-step" data-step="6" data-step-state="unvisited" data-validate="contact" data-contact="seller">
     <legend class="msf-title">{s.contact.title}</legend>
     <p class="msf-hint">{s.contact.hint}</p>
     <div class="form-grid">

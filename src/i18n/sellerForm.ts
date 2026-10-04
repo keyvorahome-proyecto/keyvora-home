@@ -70,7 +70,7 @@ export const sellerForm = {
     errors: {
       address: 'Please enter the property address.',
       choice: 'Please choose an option to continue.',
-      situation: 'Please choose at least one option.',
+      multi: 'Please choose at least one option.',
       firstName: 'Please enter your first name.',
       contact: 'Please enter a phone number or an email.',
       phone: 'Please enter a valid phone number (at least 10 digits).',
@@ -163,7 +163,7 @@ export const sellerForm = {
     errors: {
       address: 'Ingresá la dirección de la propiedad.',
       choice: 'Elegí una opción para continuar.',
-      situation: 'Elegí al menos una opción.',
+      multi: 'Elegí al menos una opción.',
       firstName: 'Ingresá tu nombre.',
       contact: 'Ingresá un teléfono o un email.',
       phone: 'Ingresá un teléfono válido (al menos 10 dígitos).',

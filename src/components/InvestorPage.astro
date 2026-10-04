@@ -1,0 +1,88 @@
+---
+// Investor landing page body (spec 43–53), EN and ES.
+import { investors } from '../i18n/investors';
+import type { Lang } from '../i18n/ui';
+import InvestorForm from './InvestorForm.astro';
+import Photo from './Photo.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = investors[lang];
+---
+<section class="hero investor-hero">
+  <div class="container hero-grid">
+    <div class="hero-inner">
+      <div class="eyebrow">{t.hero.eyebrow}</div>
+      <h1>{t.hero.h1}</h1>
+      <p class="lead">{t.hero.lead}</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#register">{t.hero.cta}</a>
+        <a class="btn btn-secondary" href="#how-it-works">{t.hero.secondary}</a>
+      </div>
+    </div>
+    <Photo
+      class="hero-photo"
+      name="house-porch-spring"
+      alt={t.hero.photoAlt}
+      width={1280}
+      height={853}
+      sizes="(max-width: 720px) 100vw, 560px"
+      small={640}
+      eager
+    />
+  </div>
+</section>
+
+<section class="section section-alt" id="how-it-works" aria-labelledby="inv-how-title">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">{t.how.eyebrow}</div>
+      <h2 id="inv-how-title">{t.how.h2}</h2>
+    </div>
+    <ol class="how-list">
+      {t.how.steps.map((step, i) => (
+        <li data-reveal>
+          <span class="step-number" aria-hidden="true">{i + 1}</span>
+          <h3>{step.title}</h3>
+          <p>{step.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<section class="section" id="register" aria-labelledby="inv-form-title">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">{t.formHead.eyebrow}</div>
+      <h2 id="inv-form-title">{t.formHead.h2}</h2>
+    </div>
+    <InvestorForm lang={lang} />
+    <p class="alt-contact">{t.altContact.before} <a href="tel:+12166772783">{t.altContact.call}</a> {t.altContact.or} <a href="sms:+12166772783">{t.altContact.text}</a> {t.altContact.after}</p>
+  </div>
+</section>
+
+<section class="section section-alt" id="faq">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">{t.faq.eyebrow}</div>
+      <h2>{t.faq.h2}</h2>
+    </div>
+    <div class="faq-list">
+      {t.faq.items.map((item, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`faq-answer-${i + 1}`}>
+            {item.q}
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer" id={`faq-answer-${i + 1}`} role="region">
+            <p>{item.a}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
